@@ -4,6 +4,10 @@ const yellow: Hex = '#FFDF00';
 const ink: Hex = '#0E0F11';
 const paper: Hex = '#F4F1EA';
 
+/** Terminal's background grid and hairlines: white at low opacity over ink. */
+export const terminalGrid = 'rgba(255,255,255,0.045)';
+export const terminalLine = 'rgba(255,255,255,0.08)';
+
 const google = (family: string, weights: number[]) =>
   `https://fonts.googleapis.com/css2?family=${family.replaceAll(' ', '+')}:wght@${weights.join(';')}&display=swap`;
 
@@ -111,13 +115,13 @@ export const brand: Brand = {
         mono: { font: 'jetbrainsMono', weight: 400 },
       },
       recipe: [
-        'Background: ink with a 24px grid of 1px lines in rgba(255,255,255,0.045).',
+        `Background: ink with a 24px grid of 1px lines in ${terminalGrid}.`,
         'Headline: Space Grotesk 700, yellow, line-height 1, letter-spacing -0.02em. It ends with the yellow cursor, which blinks on the web.',
         'Body: Space Grotesk 400 in the Terminal text color. Labels, metadata and code: JetBrains Mono 400 in the muted color.',
         'Section labels: mono, uppercase, letter-spacing 0.1em. A `// ` prefix is welcome.',
         'Primary button: yellow background, ink text, JetBrains Mono 600, 6px radius. Secondary button: transparent with a 1px light border.',
         'Logo: the dark flat lockup in the nav, the sticker in the hero.',
-        'Separate sections with 1px hairlines in rgba(255,255,255,0.08).',
+        `Separate sections with 1px hairlines in ${terminalLine}.`,
       ],
       dont: [
         'No yellow body text. Yellow is for the headline, links, the primary button and the cursor.',
