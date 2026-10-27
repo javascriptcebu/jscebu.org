@@ -8,5 +8,11 @@
   },
   "scripts": {
     "test": "vitest run"
+  },
+  "devDependencies": {
+    "@resvg/resvg-js": "^2.6.2",
+    "@types/pngjs": "^6.0.5",
+    "pngjs": "^7.0.0",
+    "tsx": "^4.23.15"
   }
 }
