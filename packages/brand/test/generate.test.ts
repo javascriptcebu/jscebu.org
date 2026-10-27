@@ -22,6 +22,12 @@ describe('tokensCss', () => {
     expect(css).toMatch(/@media \(prefers-reduced-motion: reduce\)\s*{[^}]*\.jc-cursor[^}]*animation:\s*none/);
   });
 
+  it('styles the event line, labels and photos', () => {
+    expect(css).toMatch(/\.jc-event-line\s*{[^}]*font-family:\s*var\(--jc-font-mono\)/);
+    expect(css).toMatch(/\.jc-label\s*{[^}]*text-transform:\s*uppercase/);
+    expect(css).toMatch(/\.jc-photo\s*{[^}]*object-fit:\s*cover/);
+  });
+
   it('tilts the sticker -8deg by default', () => {
     expect(css).toMatch(/\.jc-sticker\s*{[^}]*rotate\(-8deg\)/);
   });

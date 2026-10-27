@@ -18,5 +18,8 @@
     "opentype.js": "^2.0.0",
     "pngjs": "^7.0.0",
     "tsx": "^4.23.15"
+  },
+  "dependencies": {
+    "linkedom": "~0.18.14"
   }
 }

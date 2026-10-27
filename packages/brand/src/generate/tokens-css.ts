@@ -60,6 +60,22 @@ export function tokensCss(b: Brand): string {
       'text-transform: var(--jc-headline-case);',
     ]),
     block('.jc-mono', ['font-family: var(--jc-font-mono);', 'font-weight: var(--jc-weight-mono, 400);']),
+    block('.jc-label', [
+      'font-family: var(--jc-font-mono);',
+      'font-weight: var(--jc-weight-mono, 400);',
+      'text-transform: uppercase;',
+      'letter-spacing: .08em;',
+      'color: var(--jc-muted);',
+    ]),
+    '/* The event line: WHEN · WHERE · JSCEBU.ORG, on every event graphic. */',
+    block('.jc-event-line', [
+      'font-family: var(--jc-font-mono);',
+      'font-weight: 600;',
+      'text-transform: uppercase;',
+      'letter-spacing: .08em;',
+    ]),
+    '/* Real photos: mark them .jc-photo and never filter them. */',
+    block('.jc-photo', ['display: block;', 'object-fit: cover;']),
     '/* The cursor: wrap the last word and the cursor in .jc-nw so the cursor never wraps alone. */',
     block('.jc-nw', ['white-space: nowrap;']),
     block('.jc-cursor', [

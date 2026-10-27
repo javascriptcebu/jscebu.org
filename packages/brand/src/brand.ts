@@ -1,4 +1,4 @@
-import type { Asset, Brand, Hex } from './types.ts';
+import type { Asset, Brand, FontId, FontToken, Hex } from './types.ts';
 
 const yellow: Hex = '#FFDF00';
 const ink: Hex = '#0E0F11';
@@ -17,6 +17,65 @@ const logo = (id: string, label: string, use: string): Asset[] => [
   { id: `${id}-png`, label: `${label} (PNG)`, path: `/brand/logo/${id}.png`, use },
 ];
 
+const fonts: FontToken[] = [
+  {
+    id: 'archivo',
+    family: 'Archivo',
+    cssStack: "'Archivo Variable', 'Archivo', 'Arial Black', sans-serif",
+    googleFontsUrl: google('Archivo', [600, 900]),
+    fontsourcePackage: '@fontsource-variable/archivo',
+    weights: [600, 900],
+    role: 'Poster headlines (900, uppercase) and body (600). A heavy grotesque that sits well beside the wordmark.',
+  },
+  {
+    id: 'spaceGrotesk',
+    family: 'Space Grotesk',
+    cssStack: "'Space Grotesk Variable', 'Space Grotesk', system-ui, sans-serif",
+    googleFontsUrl: google('Space Grotesk', [400, 700]),
+    fontsourcePackage: '@fontsource-variable/space-grotesk',
+    weights: [400, 700],
+    role: 'Terminal headlines (700) and body (400).',
+  },
+  {
+    id: 'interTight',
+    family: 'Inter Tight',
+    cssStack: "'Inter Tight Variable', 'Inter Tight', system-ui, sans-serif",
+    googleFontsUrl: google('Inter Tight', [400, 800]),
+    fontsourcePackage: '@fontsource-variable/inter-tight',
+    weights: [400, 800],
+    role: 'Journal headlines (800, sentence case) and body (400).',
+  },
+  {
+    id: 'jetbrainsMono',
+    family: 'JetBrains Mono',
+    cssStack: "'JetBrains Mono Variable', 'JetBrains Mono', ui-monospace, monospace",
+    googleFontsUrl: google('JetBrains Mono', [400, 600]),
+    fontsourcePackage: '@fontsource-variable/jetbrains-mono',
+    weights: [400, 600],
+    role: 'Labels, metadata, the event line and code, in every personality.',
+  },
+  {
+    id: 'roboto',
+    family: 'Roboto',
+    cssStack: "'Roboto', sans-serif",
+    googleFontsUrl: google('Roboto', [900]),
+    fontsourcePackage: '@fontsource/roboto',
+    weights: [900],
+    role: 'The wordmark only (Roboto Black). It is already outlined in the logo files, so never set other text in it.',
+  },
+];
+
+/** One Google Fonts stylesheet link for the given fonts, as used in the examples. */
+const fontLink = (...ids: FontId[]) => {
+  const families = ids.map((id) => {
+    const f = fonts.find((x) => x.id === id)!;
+    return `family=${f.family.replaceAll(' ', '+')}:wght@${f.weights.join(';')}`;
+  });
+  return `<link rel="stylesheet" href="https://fonts.googleapis.com/css2?${families.join('&')}&display=swap">`;
+};
+
+const tokensLink = '<link rel="stylesheet" href="https://www.jscebu.org/brand/tokens.css">';
+
 export const brand: Brand = {
   name: 'JavaScript Cebu',
   version: '0.1.0',
@@ -28,53 +87,7 @@ export const brand: Brand = {
     { id: 'paper', hex: paper, role: 'Warm off-white. The Journal background.' },
   ],
 
-  fonts: [
-    {
-      id: 'archivo',
-      family: 'Archivo',
-      cssStack: "'Archivo Variable', 'Archivo', 'Arial Black', sans-serif",
-      googleFontsUrl: google('Archivo', [600, 900]),
-      fontsourcePackage: '@fontsource-variable/archivo',
-      weights: [600, 900],
-      role: 'Poster headlines (900, uppercase) and body (600). A heavy grotesque that sits well beside the wordmark.',
-    },
-    {
-      id: 'spaceGrotesk',
-      family: 'Space Grotesk',
-      cssStack: "'Space Grotesk Variable', 'Space Grotesk', system-ui, sans-serif",
-      googleFontsUrl: google('Space Grotesk', [400, 700]),
-      fontsourcePackage: '@fontsource-variable/space-grotesk',
-      weights: [400, 700],
-      role: 'Terminal headlines (700) and body (400).',
-    },
-    {
-      id: 'interTight',
-      family: 'Inter Tight',
-      cssStack: "'Inter Tight Variable', 'Inter Tight', system-ui, sans-serif",
-      googleFontsUrl: google('Inter Tight', [400, 800]),
-      fontsourcePackage: '@fontsource-variable/inter-tight',
-      weights: [400, 800],
-      role: 'Journal headlines (800, sentence case) and body (400).',
-    },
-    {
-      id: 'jetbrainsMono',
-      family: 'JetBrains Mono',
-      cssStack: "'JetBrains Mono Variable', 'JetBrains Mono', ui-monospace, monospace",
-      googleFontsUrl: google('JetBrains Mono', [400, 600]),
-      fontsourcePackage: '@fontsource-variable/jetbrains-mono',
-      weights: [400, 600],
-      role: 'Labels, metadata, the event line and code, in every personality.',
-    },
-    {
-      id: 'roboto',
-      family: 'Roboto',
-      cssStack: "'Roboto', sans-serif",
-      googleFontsUrl: google('Roboto', [900]),
-      fontsourcePackage: '@fontsource/roboto',
-      weights: [900],
-      role: 'The wordmark only (Roboto Black). It is already outlined in the logo files, so never set other text in it.',
-    },
-  ],
+  fonts,
 
   personalities: [
     {
@@ -102,7 +115,15 @@ export const brand: Brand = {
         'No gradients, extra colors or hexagon shapes.',
         'No more than one cursor.',
       ],
-      exampleHtml: '',
+      exampleHtml: `${tokensLink}
+${fontLink('archivo', 'jetbrainsMono')}
+<article class="jc-poster" style="position: relative; box-sizing: border-box; width: 540px; height: 540px; padding: 38px 38px 0; overflow: hidden;">
+  <img class="jc-sticker" src="https://www.jscebu.org/brand/logo/sticker.svg" alt="JavaScript Cebu" style="position: absolute; top: 30px; right: 32px; width: 110px;">
+  <p class="jc-label" style="margin: 0; font-size: 13px;">Meetup · Nov 2026</p>
+  <h1 class="jc-headline" style="margin: 76px 0 0; max-width: 400px; font-size: 56px; line-height: .9; letter-spacing: -.02em;">Ship faster with AI <span class="jc-nw">agents<span class="jc-cursor" aria-hidden="true"></span></span></h1>
+  <p style="margin: 28px 0 0; font-size: 17px;"><span class="jc-mono" style="font-size: 12px;">01</span>&nbsp; Building agents with the AI SDK</p>
+  <p class="jc-event-line" style="position: absolute; left: 0; right: 0; bottom: 0; margin: 0; padding: 17px 38px; font-size: 14px; background: var(--jc-ink); color: var(--jc-yellow);">Sat Nov 21 · 2PM · Cebu City · jscebu.org</p>
+</article>`,
     },
     {
       id: 'terminal',
@@ -128,7 +149,22 @@ export const brand: Brand = {
         'No neon glows, gradients or other accent colors.',
         'No more than one cursor on a screen.',
       ],
-      exampleHtml: '',
+      exampleHtml: `${tokensLink}
+${fontLink('spaceGrotesk', 'jetbrainsMono')}
+<main class="jc-terminal" style="position: relative; padding: 24px 32px 44px;">
+  <nav style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 20px; border-bottom: 1px solid var(--jc-line);">
+    <img src="https://www.jscebu.org/brand/logo/lockup-dark.svg" alt="JavaScript Cebu" style="width: 140px;">
+    <span class="jc-label" style="font-size: 12px;">events · projects · join</span>
+  </nav>
+  <img class="jc-sticker" src="https://www.jscebu.org/brand/logo/sticker.svg" alt="" style="position: absolute; top: 96px; right: 40px; width: 96px;">
+  <p class="jc-label" style="margin: 48px 0 0; font-size: 13px; color: var(--jc-accent);">// cebu's javascript community</p>
+  <h1 class="jc-headline" style="margin: 12px 0 0; max-width: 560px; font-size: 56px; line-height: 1; letter-spacing: -.02em; color: var(--jc-accent);">Build things. Ship them. <span class="jc-nw">Together<span class="jc-cursor jc-cursor--blink" aria-hidden="true"></span></span></h1>
+  <p style="margin: 18px 0 0; max-width: 46ch; font-size: 17px; line-height: 1.6;">Meetups, workshops and Hacktoberfest, run by developers in Cebu.</p>
+  <p style="display: flex; gap: 12px; margin: 28px 0 0;">
+    <a class="jc-mono" href="https://www.jscebu.org" style="padding: 12px 16px; border-radius: 6px; background: var(--jc-accent); color: var(--jc-accent-text); font-weight: 600; text-decoration: none;">Next meetup →</a>
+    <a class="jc-mono" href="https://www.jscebu.org" style="padding: 11px 15px; border-radius: 6px; border: 1px solid var(--jc-muted); color: var(--jc-text); font-weight: 600; text-decoration: none;">Join us</a>
+  </p>
+</main>`,
     },
     {
       id: 'journal',
@@ -154,7 +190,17 @@ export const brand: Brand = {
         'No uppercase headlines. That is Poster.',
         'No Terminal grid on paper.',
       ],
-      exampleHtml: '',
+      exampleHtml: `${tokensLink}
+${fontLink('interTight', 'jetbrainsMono')}
+<article class="jc-journal" style="max-width: 640px; padding: 32px;">
+  <p class="jc-label" style="display: flex; justify-content: space-between; margin: 0; padding-top: 10px; border-top: 1px solid var(--jc-line); font-size: 12px;"><span>Recap</span><span>Nov 21, 2026</span></p>
+  <h1 class="jc-headline" style="margin: 20px 0 0; font-size: 48px; line-height: 1.05; letter-spacing: -.03em;">What we learned <span class="jc-highlight">shipping with AI</span> <span class="jc-nw">agents<span class="jc-cursor" aria-hidden="true"></span></span></h1>
+  <figure style="margin: 28px 0 0;">
+    <img class="jc-photo" src="https://www.jscebu.org/brand/photos/community-meetup.jpg" alt="The JS Cebu community at a meetup" style="width: 100%; aspect-ratio: 4 / 3;">
+    <figcaption class="jc-label" style="margin-top: 8px; font-size: 11px;">The November meetup · Photo: JS Cebu</figcaption>
+  </figure>
+  <p style="margin: 24px 0 0; font-size: 18px; line-height: 1.6;">Notes from the November meetup: what worked, what broke, and what we'd do again. Padayon!</p>
+</article>`,
     },
   ],
 
