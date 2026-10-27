@@ -1,0 +1,14 @@
+JavaScript Cebu brand assets
+
+The JavaScript Cebu name, the hexagon logo in every version (SVG, PNG and the
+source PSD), the wordmark lockups and the sticker are © JavaScript Cebu. They
+are not covered by the MIT license at the root of this repository.
+
+You may use them to make things for or about JavaScript Cebu (event graphics,
+recaps, sponsor walls, talks, community pages) as described at
+https://www.jscebu.org/brand. Don't alter the logo, and don't use it in a way
+that suggests JavaScript Cebu endorses something it doesn't.
+
+The code in this package (generators, scripts, templates) is MIT-licensed like
+the rest of the repository. Fonts keep their own licenses (SIL Open Font
+License or Apache 2.0).
