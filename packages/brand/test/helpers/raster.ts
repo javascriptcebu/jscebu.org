@@ -28,3 +28,21 @@ export function iou(a: boolean[], b: boolean[]): number {
 
 export const alphaMask = (r: Raster, min = 128) => Array.from({ length: r.width * r.height }, (_, i) => r.data[i * 4 + 3] >= min);
 export const whiteMask = (r: Raster, min = 128) => Array.from({ length: r.width * r.height }, (_, i) => r.data[i * 4] >= min);
+
+/** Binary erosion with a square of the given radius. */
+export function erode(mask: boolean[], width: number, radius: number): boolean[] {
+  const height = mask.length / width;
+  return mask.map((on, i) => {
+    if (!on) return false;
+    const x = i % width;
+    const y = (i - x) / width;
+    for (let dy = -radius; dy <= radius; dy++) {
+      for (let dx = -radius; dx <= radius; dx++) {
+        const nx = x + dx;
+        const ny = y + dy;
+        if (nx < 0 || ny < 0 || nx >= width || ny >= height || !mask[ny * width + nx]) return false;
+      }
+    }
+    return true;
+  });
+}

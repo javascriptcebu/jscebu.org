@@ -7,11 +7,15 @@
     ".": "./src/index.ts"
   },
   "scripts": {
-    "test": "vitest run"
+    "test": "vitest run",
+    "build:logos": "tsx scripts/logo/build-logos.ts"
   },
   "devDependencies": {
+    "@fontsource/roboto": "^5.3.0",
     "@resvg/resvg-js": "^2.6.2",
+    "@types/opentype.js": "^1.3.10",
     "@types/pngjs": "^6.0.5",
+    "opentype.js": "^2.0.0",
     "pngjs": "^7.0.0",
     "tsx": "^4.23.15"
   }
