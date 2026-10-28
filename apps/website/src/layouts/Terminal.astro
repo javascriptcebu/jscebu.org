@@ -1,0 +1,49 @@
+---
+import '@fontsource-variable/archivo';
+import '@fontsource-variable/space-grotesk';
+import '@fontsource-variable/inter-tight';
+import '@fontsource-variable/jetbrains-mono';
+import { brand, tokensCss } from '@jscebu/brand';
+
+interface Props {
+  title: string;
+  description: string;
+}
+
+const { title, description } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="icon" type="image/svg+xml" href="/brand/logo/mark-color.svg" />
+    <link rel="alternate" type="text/markdown" href="/brand.md" title="JS Cebu brand rules for agents" />
+    <style is:inline set:html={tokensCss(brand)}></style>
+  </head>
+  <body class="jc-terminal">
+    <slot />
+  </body>
+</html>
+
+<style is:global>
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+  a {
+    color: var(--jc-accent);
+  }
+  ::selection {
+    background: var(--jc-yellow);
+    color: var(--jc-ink);
+  }
+</style>

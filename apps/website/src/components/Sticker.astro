@@ -1,0 +1,23 @@
+---
+/** The logo as a tilted die-cut sticker. The brand allows 6–10° either way. */
+interface Props {
+  size: string;
+  tilt?: number;
+  alt?: string;
+  class?: string;
+}
+
+const { size, tilt = -8, alt = '', class: className } = Astro.props;
+if (Math.abs(tilt) < 6 || Math.abs(tilt) > 10) {
+  throw new Error(`Sticker tilt must be 6–10° either way, got ${tilt}`);
+}
+---
+
+<img
+  class:list={['jc-sticker', className]}
+  src="/brand/logo/sticker.svg"
+  alt={alt}
+  width="1106"
+  height="1107"
+  style={`width: ${size}; height: auto; transform: rotate(${tilt}deg);`}
+/>

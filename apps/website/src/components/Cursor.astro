@@ -1,0 +1,18 @@
+---
+/**
+ * A headline's text with the brand cursor after the last word. The last word and
+ * the cursor share a .jc-nw wrapper so the cursor can never wrap onto its own line.
+ */
+interface Props {
+  text: string;
+  blink?: boolean;
+}
+
+const { text, blink = false } = Astro.props;
+const trimmed = text.trim();
+const split = trimmed.lastIndexOf(' ');
+const rest = split === -1 ? '' : trimmed.slice(0, split + 1);
+const last = trimmed.slice(split + 1);
+---
+
+{rest}<span class="jc-nw">{last}<span class:list={['jc-cursor', { 'jc-cursor--blink': blink }]} aria-hidden="true"></span></span>

@@ -1,0 +1,14 @@
+---
+import { brand } from '@jscebu/brand';
+import Cursor from '../../components/Cursor.astro';
+import Terminal from '../../layouts/Terminal.astro';
+---
+
+<Terminal title="Brand · JS Cebu" description="How JS Cebu looks: logos, colors, rules and templates.">
+  <main>
+    <h1 class="jc-headline"><Cursor text="How JS Cebu looks" blink /></h1>
+    <ul>
+      {brand.must.map((rule) => <li>{rule.text}</li>)}
+    </ul>
+  </main>
+</Terminal>
