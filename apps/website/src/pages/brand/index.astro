@@ -7,7 +7,7 @@ import RuleList from '../../components/RuleList.astro';
 import Section from '../../components/Section.astro';
 import Sticker from '../../components/Sticker.astro';
 import Swatch from '../../components/Swatch.astro';
-import Terminal from '../../layouts/Terminal.astro';
+import Site from '../../layouts/Site.astro';
 import { asset, fontVar } from '../../lib/view';
 
 const agentUrl = `${brand.site}/brand.md`;
@@ -36,18 +36,17 @@ const nav = [
 const sample = 'Aa Bb Cc 0123456789';
 ---
 
-<Terminal title="Brand · JS Cebu" description="How JS Cebu looks: logos, colors, type, the cursor and sticker signatures, three personalities, and the rules agents follow.">
-  <nav class="top">
-    <div class="wrap bar">
-      <a href="#intro" class="home"><img src={asset('lockup-dark').path} alt="JavaScript Cebu" width="5045" height="1284" /></a>
-      <ul class="links jc-mono">
+<Site title="Brand · JS Cebu" description="How JS Cebu looks: logos, colors, type, the cursor and sticker signatures, three personalities, and the rules agents follow." current="brand">
+  <div slot="subnav" class="subnav">
+    <div class="wrap subbar">
+      <ul class="sections jc-mono">
         {nav.map(([id, label]) => <li><a href={`#${id}`}>{label}</a></li>)}
       </ul>
       <a class="jc-mono agents" href="/brand.md">brand.md</a>
     </div>
-  </nav>
+  </div>
 
-  <main class="wrap">
+  <div class="wrap">
     <section id="intro" class="intro">
       <div class="hero">
         <p class="jc-label kicker">// brand · v{brand.version}</p>
@@ -216,13 +215,8 @@ const sample = 'Aa Bb Cc 0123456789';
         ))
       }
     </Section>
-  </main>
-
-  <footer class="wrap foot jc-mono">
-    <p>Code is MIT-licensed. The JavaScript Cebu name and logos are © JavaScript Cebu; use them as this page describes.</p>
-    <p><a href="https://github.com/javascriptcebu/jscebu.org">github.com/javascriptcebu/jscebu.org</a> · <a href="/llms.txt">llms.txt</a></p>
-  </footer>
-</Terminal>
+  </div>
+</Site>
 
 <script>
   for (const button of document.querySelectorAll<HTMLButtonElement>('[data-copy]')) {
@@ -239,67 +233,40 @@ const sample = 'Aa Bb Cc 0123456789';
 </script>
 
 <style>
-  .wrap {
-    box-sizing: border-box;
-    width: 100%;
-    max-width: 1120px;
-    margin: 0 auto;
-    padding: 0 24px;
+  /* section links under the site nav */
+  .subnav {
+    border-top: 1px solid var(--jc-line);
   }
-  @media (max-width: 420px) {
-    .wrap {
-      padding: 0 16px;
-    }
-  }
-
-  /* nav */
-  .top {
-    position: sticky;
-    top: 0;
-    z-index: 10;
-    border-bottom: 1px solid var(--jc-line);
-    background: color-mix(in srgb, var(--jc-ink) 92%, transparent);
-    backdrop-filter: blur(8px);
-  }
-  .bar {
+  .subbar {
     display: flex;
     align-items: center;
-    gap: 24px;
-    height: 60px;
+    gap: 16px;
+    height: 40px;
   }
-  .home img {
-    display: block;
-    width: 120px;
-    height: auto;
-  }
-  .links {
-    display: none;
-    gap: 20px;
-    margin: 0 0 0 auto;
+  .sections {
+    display: flex;
+    gap: 18px;
+    min-width: 0;
+    margin: 0;
     padding: 0;
+    overflow-x: auto;
     list-style: none;
-    font-size: 13px;
+    font-size: 12px;
+    white-space: nowrap;
+    scrollbar-width: none;
   }
-  .links a,
-  .agents {
+  .sections a {
     color: var(--jc-muted);
     text-decoration: none;
   }
-  .links a:hover {
+  .sections a:hover {
     color: var(--jc-text);
   }
   .agents {
+    flex: none;
     margin-left: auto;
     color: var(--jc-accent);
-    font-size: 13px;
-  }
-  @media (min-width: 960px) {
-    .links {
-      display: flex;
-    }
-    .agents {
-      margin-left: 0;
-    }
+    font-size: 12px;
   }
 
   /* intro */
@@ -709,14 +676,4 @@ const sample = 'Aa Bb Cc 0123456789';
     color: var(--jc-muted);
   }
 
-  .foot {
-    padding-top: 32px;
-    padding-bottom: 56px;
-    border-top: 1px solid var(--jc-line);
-    font-size: 13px;
-    color: var(--jc-muted);
-  }
-  .foot p {
-    margin: 0 0 6px;
-  }
 </style>

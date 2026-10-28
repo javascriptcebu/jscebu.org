@@ -1,0 +1,99 @@
+---
+import { getCollection, getEntry, render } from 'astro:content';
+import Cursor from '../components/Cursor.astro';
+import Site from '../layouts/Site.astro';
+
+const page = (await getEntry('pages', 'about'))!;
+const { Content } = await render(page);
+const organizers = (await getCollection('organizers')).sort((a, b) => a.data.order - b.data.order);
+---
+
+<Site title={`${page.data.title} · JS Cebu`} description={page.data.description} current="about">
+  <div class="wrap">
+    <header class="page-head">
+      <p class="jc-label">// about</p>
+      <h1 class="jc-headline"><Cursor text={page.data.title} blink /></h1>
+    </header>
+    <div class="prose">
+      <Content />
+    </div>
+    <section id="organizers" class="organizers">
+      <h2 class="jc-label">Organizers</h2>
+      <ul>
+        {
+          organizers.map(({ data }) => (
+            <li>
+              <span class="name">{data.name}</span>
+              <span class="jc-mono role">
+                {data.role}
+                {data.community && ` · ${data.community}`}
+              </span>
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+  </div>
+</Site>
+
+<style>
+  .prose {
+    max-width: 68ch;
+    font-size: 17px;
+    line-height: 1.65;
+  }
+  .prose :global(h2) {
+    margin: 48px 0 12px;
+    font-family: var(--jc-font-mono);
+    font-size: 13px;
+    font-weight: 400;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--jc-accent);
+  }
+  .prose :global(h2:first-child) {
+    margin-top: 0;
+  }
+  .prose :global(ul) {
+    padding-left: 20px;
+  }
+  .prose :global(li) {
+    margin: 8px 0;
+  }
+  .prose :global(strong) {
+    color: var(--jc-accent);
+    font-weight: 600;
+  }
+  .organizers {
+    margin-top: 56px;
+    scroll-margin-top: 80px;
+  }
+  .organizers h2 {
+    margin: 0 0 16px;
+    font-size: 13px;
+    color: var(--jc-accent);
+  }
+  .organizers ul {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 220px), 1fr));
+    gap: 12px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .organizers li {
+    display: grid;
+    gap: 4px;
+    padding: 18px;
+    border: 1px solid var(--jc-line);
+    border-radius: 10px;
+  }
+  .name {
+    font-size: 18px;
+    font-weight: 700;
+  }
+  .role {
+    font-size: 13px;
+    color: var(--jc-muted);
+  }
+</style>

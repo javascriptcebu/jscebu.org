@@ -1,0 +1,59 @@
+---
+import SiteFooter from '../components/SiteFooter.astro';
+import SiteNav from '../components/SiteNav.astro';
+import Terminal from './Terminal.astro';
+
+interface Props {
+  title: string;
+  description: string;
+  current?: 'home' | 'projects' | 'about' | 'links' | 'brand';
+}
+
+const { title, description, current } = Astro.props;
+---
+
+<Terminal {title} {description}>
+  <SiteNav {current}><slot name="subnav" /></SiteNav>
+  <main>
+    <slot />
+  </main>
+  <SiteFooter />
+</Terminal>
+
+<style is:global>
+  main {
+    min-height: calc(100vh - 280px);
+  }
+  .wrap {
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 1120px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+  @media (max-width: 420px) {
+    .wrap {
+      padding: 0 16px;
+    }
+  }
+  .page-head {
+    padding: 72px 0 40px;
+  }
+  .page-head .jc-label {
+    margin: 0;
+    font-size: 13px;
+    color: var(--jc-accent);
+  }
+  .page-head h1 {
+    margin: 14px 0 0;
+    font-size: clamp(40px, 8vw, 72px);
+    line-height: 1;
+    letter-spacing: -0.02em;
+    color: var(--jc-accent);
+  }
+  .page-head p {
+    max-width: 56ch;
+    margin: 18px 0 0;
+    font-size: 18px;
+  }
+</style>
