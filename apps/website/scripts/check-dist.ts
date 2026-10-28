@@ -72,7 +72,13 @@ export function findLiterals(srcFiles: { path: string; text: string }[]): string
 
 /** Every rule list that must read the same on the page and in brand.md. */
 export function parityRules(b: Brand): string[] {
-  return b.must.map((r) => r.text);
+  return [
+    ...b.must.map((r) => r.text),
+    ...b.logoRules,
+    ...b.signatures.flatMap((s) => s.rules),
+    ...b.personalities.flatMap((p) => [...p.recipe, ...p.dont]),
+    ...b.voice.principles,
+  ];
 }
 
 function walk(dir: string): string[] {

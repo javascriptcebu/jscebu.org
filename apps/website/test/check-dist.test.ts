@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { findCursorViolations, findLiterals, findMissingLinks, findParityGaps } from '../scripts/check-dist.ts';
+import { brand } from '@jscebu/brand';
+import { findCursorViolations, findLiterals, findMissingLinks, findParityGaps, parityRules } from '../scripts/check-dist.ts';
 
 const cursor = '<span class="jc-cursor" aria-hidden="true"></span>';
 
@@ -54,5 +55,20 @@ describe('findLiterals', () => {
 
   it('allows the brand variables', () => {
     expect(findLiterals([{ path: 'src/b.astro', text: 'p { color: var(--jc-yellow); font-family: var(--jc-font-mono); }' }])).toEqual([]);
+  });
+});
+
+describe('parityRules', () => {
+  it('covers every rule list the page and brand.md both show', () => {
+    const rules = parityRules(brand);
+    const expected = [
+      ...brand.must.map((r) => r.text),
+      ...brand.logoRules,
+      ...brand.signatures.flatMap((s) => s.rules),
+      ...brand.personalities.flatMap((p) => [...p.recipe, ...p.dont]),
+      ...brand.voice.principles,
+    ];
+    expect(rules).toEqual(expect.arrayContaining(expected));
+    expect(rules).toHaveLength(expected.length);
   });
 });

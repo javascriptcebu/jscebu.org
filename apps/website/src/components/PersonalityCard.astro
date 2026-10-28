@@ -1,0 +1,110 @@
+---
+import { brand, type Personality } from '@jscebu/brand';
+import { exampleDoc } from '../lib/view';
+import Frame from './Frame.astro';
+import RuleList from './RuleList.astro';
+
+interface Props {
+  p: Personality;
+}
+
+const { p } = Astro.props;
+const font = (id: string) => brand.fonts.find((f) => f.id === id)!.family;
+const chips = [
+  ['bg', p.colors.bg],
+  ['text', p.colors.text],
+  ['muted', p.colors.muted],
+  ['accent', p.colors.accent],
+  ['cursor', p.colors.cursor],
+] as const;
+/** The examples' natural sizes, so they scale to fit on small screens. */
+const size: Record<Personality['id'], [number, number]> = { poster: [540, 540], terminal: [760, 470], journal: [640, 860] };
+---
+
+<article class="card" id={`personality-${p.id}`}>
+  <header>
+    <h3 style={`font-family: var(--jc-font-${p.id}); font-weight: ${p.type.headline.weight}; text-transform: ${p.type.headline.uppercase ? 'uppercase' : 'none'}`}>{p.name}</h3>
+    <p class="use">{p.use}</p>
+  </header>
+
+  <ul class="chips">
+    {chips.map(([k, hex]) => <li><span class="dot" style={`background: ${hex}`}></span><span class="jc-mono">{k} {hex}</span></li>)}
+  </ul>
+
+  <p class="jc-mono type">
+    {font(p.type.headline.font)} {p.type.headline.weight}{p.type.headline.uppercase ? ' uppercase' : ''} · {font(p.type.body.font)} {p.type.body.weight} · {font(p.type.mono.font)} {p.type.mono.weight}
+  </p>
+
+  <div class="cols">
+    <div>
+      <h4 class="jc-label">Recipe</h4>
+      <RuleList items={p.recipe} />
+    </div>
+    <div>
+      <h4 class="jc-label">Don't</h4>
+      <RuleList items={p.dont} tone="dont" />
+    </div>
+  </div>
+
+  <h4 class="jc-label">Example</h4>
+  <Frame title={`${p.name} example`} srcdoc={exampleDoc(p.exampleHtml)} width={size[p.id][0]} height={size[p.id][1]} />
+</article>
+
+<style>
+  .card {
+    padding: 28px;
+    border: 1px solid var(--jc-line);
+    border-radius: 12px;
+    background: color-mix(in srgb, var(--jc-text) 3%, var(--jc-ink));
+  }
+  h3 {
+    margin: 0;
+    font-size: 40px;
+    line-height: 1;
+    color: var(--jc-text);
+  }
+  .use {
+    margin: 8px 0 0;
+    color: var(--jc-muted);
+  }
+  .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 16px;
+    margin: 20px 0 0;
+    padding: 0;
+    list-style: none;
+    font-size: 13px;
+  }
+  .chips li {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .dot {
+    width: 14px;
+    height: 14px;
+    border-radius: 3px;
+    border: 1px solid var(--jc-line);
+  }
+  .type {
+    margin: 12px 0 0;
+    font-size: 13px;
+    color: var(--jc-muted);
+  }
+  .cols {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 24px;
+    margin-top: 8px;
+  }
+  @media (min-width: 860px) {
+    .cols {
+      grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+    }
+  }
+  h4 {
+    margin: 24px 0 12px;
+    font-size: 12px;
+  }
+</style>

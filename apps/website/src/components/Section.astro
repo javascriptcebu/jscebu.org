@@ -1,0 +1,45 @@
+---
+interface Props {
+  id: string;
+  number: string;
+  title: string;
+  tag?: string;
+}
+
+const { id, number, title, tag } = Astro.props;
+---
+
+<section id={id} class="section">
+  <header class="head">
+    <h2 class="jc-label"><span class="num">{number}</span> · {title}</h2>
+    {tag && <span class="jc-label tag">{tag}</span>}
+  </header>
+  <slot />
+</section>
+
+<style>
+  .section {
+    padding: 56px 0;
+    border-top: 1px solid var(--jc-line);
+    scroll-margin-top: 72px;
+  }
+  .head {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 8px 16px;
+    margin-bottom: 24px;
+  }
+  h2 {
+    margin: 0;
+    font-size: 13px;
+    letter-spacing: 0.1em;
+  }
+  .num,
+  .tag {
+    color: var(--jc-accent);
+  }
+  .tag {
+    font-size: 12px;
+  }
+</style>

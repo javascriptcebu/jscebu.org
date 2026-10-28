@@ -1,14 +1,722 @@
 ---
-import { brand } from '@jscebu/brand';
+import { brand, contrastRatio } from '@jscebu/brand';
 import Cursor from '../../components/Cursor.astro';
+import Frame from '../../components/Frame.astro';
+import PersonalityCard from '../../components/PersonalityCard.astro';
+import RuleList from '../../components/RuleList.astro';
+import Section from '../../components/Section.astro';
+import Sticker from '../../components/Sticker.astro';
+import Swatch from '../../components/Swatch.astro';
 import Terminal from '../../layouts/Terminal.astro';
+import { asset, fontVar } from '../../lib/view';
+
+const agentUrl = `${brand.site}/brand.md`;
+
+/** Each logo version on the background it is meant for. */
+const logos = [
+  { id: 'lockup-light', bg: 'paper' },
+  { id: 'lockup-dark', bg: 'ink' },
+  { id: 'lockup-ink', bg: 'yellow' },
+  { id: 'lockup-white', bg: 'photo' },
+  { id: 'sticker', bg: 'yellow' },
+  { id: 'mark-color', bg: 'paper' },
+  { id: 'mark-ink', bg: 'yellow' },
+  { id: 'mark-white', bg: 'ink' },
+].map((l) => ({ ...l, asset: asset(l.id) }));
+
+const nav = [
+  ['logo', 'Logo'],
+  ['color', 'Color'],
+  ['type', 'Type'],
+  ['signatures', 'Signatures'],
+  ['personalities', 'Personalities'],
+  ['voice', 'Voice'],
+  ['downloads', 'Downloads'],
+];
+const sample = 'Aa Bb Cc 0123456789';
 ---
 
-<Terminal title="Brand · JS Cebu" description="How JS Cebu looks: logos, colors, rules and templates.">
-  <main>
-    <h1 class="jc-headline"><Cursor text="How JS Cebu looks" blink /></h1>
-    <ul>
-      {brand.must.map((rule) => <li>{rule.text}</li>)}
-    </ul>
+<Terminal title="Brand · JS Cebu" description="How JS Cebu looks: logos, colors, type, the cursor and sticker signatures, three personalities, and the rules agents follow.">
+  <nav class="top">
+    <div class="wrap bar">
+      <a href="#intro" class="home"><img src={asset('lockup-dark').path} alt="JavaScript Cebu" width="5045" height="1284" /></a>
+      <ul class="links jc-mono">
+        {nav.map(([id, label]) => <li><a href={`#${id}`}>{label}</a></li>)}
+      </ul>
+      <a class="jc-mono agents" href="/brand.md">brand.md</a>
+    </div>
+  </nav>
+
+  <main class="wrap">
+    <section id="intro" class="intro">
+      <div class="hero">
+        <p class="jc-label kicker">// brand · v{brand.version}</p>
+        <h1 class="jc-headline"><Cursor text="How JS Cebu looks" blink /></h1>
+        <p class="lede">Everything you need to make something for JavaScript Cebu: logos, colors, type, rules and templates. Using an AI agent? Give it the brand.md link. It has the same rules in a form agents can follow.</p>
+        <div class="actions">
+          <a class="btn primary jc-mono" href="#downloads">Download logos ↓</a>
+          <a class="btn jc-mono" href="/brand.md">For agents: /brand.md</a>
+          <button class="btn ghost jc-mono" type="button" data-copy={agentUrl}>Copy link</button>
+        </div>
+        <Sticker size="clamp(88px, 22vw, 168px)" class="hero-sticker" alt="" />
+      </div>
+
+      <div class="must">
+        <h2 class="jc-label">Check every piece</h2>
+        <RuleList items={brand.must.map((r) => r.text)} tone="check" />
+      </div>
+    </section>
+
+    <Section id="logo" number="01" title="Logo" tag="sticker · flat · one-color">
+      <div class="logos">
+        {
+          logos.map((l) => (
+            <figure class={`logo bg-${l.bg}`}>
+              <div class="stage">
+                {l.bg === 'photo' && <img class="jc-photo backdrop" src={asset('photo').path} alt="" />}
+                <img class:list={['art', { mark: !l.id.startsWith('lockup'), tilt: l.id === 'sticker' }]} src={l.asset.path} alt={l.asset.label} />
+              </div>
+              <figcaption>
+                <span class="jc-mono">{l.id}</span>
+                <span>{l.asset.use}</span>
+              </figcaption>
+            </figure>
+          ))
+        }
+      </div>
+      <RuleList items={brand.logoRules} />
+    </Section>
+
+    <Section id="color" number="02" title="Color" tag="yellow leads">
+      <div class="swatches">
+        {brand.colors.map((c) => <Swatch name={c.id} hex={c.hex} variable={`--jc-${c.id}`} role={c.role} />)}
+      </div>
+      <h3 class="jc-label sub">Text pairs, checked against WCAG AA</h3>
+      <ul class="pairs">
+        {
+          brand.textPairs.map((p) => (
+            <li style={`color: ${p.fg}; background: ${p.bg}`}>
+              <span class="aa">Aa</span>
+              <span class="jc-mono ratio">{contrastRatio(p.fg, p.bg).toFixed(1)}:1</span>
+              <span class="where">{p.where}</span>
+            </li>
+          ))
+        }
+      </ul>
+    </Section>
+
+    <Section id="type" number="03" title="Type" tag="free, open-licensed">
+      <ul class="fonts">
+        {
+          brand.fonts.map((f) => (
+            <li>
+              <div class="meta">
+                <span class="jc-mono family">{f.family}</span>
+                <span class="jc-mono weights">{f.weights.join(' · ')}</span>
+              </div>
+              {f.id === 'roboto' ? (
+                <img class="wordmark" src={asset('lockup-dark').path} alt="The JAVASCRIPT / CEBU wordmark in Roboto Black" />
+              ) : (
+                f.weights.map((w) => <p class="specimen" style={`--face: ${fontVar(f)}; font-weight: ${w}`}>{f.family} · {sample}</p>)
+              )}
+              <p class="role">{f.role}</p>
+              <a class="jc-mono gf" href={f.googleFontsUrl}>Google Fonts ↗</a>
+            </li>
+          ))
+        }
+      </ul>
+    </Section>
+
+    <Section id="signatures" number="04" title="Signatures" tag="in this order">
+      <ol class="sigs">
+        {
+          brand.signatures.map((s) => (
+            <li class="sig">
+              <div class="sig-head">
+                <span class="jc-mono rank">0{s.rank}</span>
+                <h3>{s.name}</h3>
+                <span class:list={['jc-mono', 'badge', s.status]}>{s.status}</span>
+              </div>
+              <p class="summary">{s.summary}</p>
+              <div class="demo">
+                {s.id === 'cursor' && <code class="snippet">{'<span class="jc-nw">word<span class="jc-cursor" aria-hidden="true"></span></span>'}</code>}
+                {s.id === 'sticker' && <img class="demo-sticker" src={asset('sticker-tilted').path} alt="The JS Cebu sticker, tilted" />}
+                {s.id === 'bisaya' && <p class="jc-mono phrases">{brand.voice.phrases.map((p) => p.bisaya).join(' · ')}</p>}
+                {s.id === 'photos' && <img class="jc-photo demo-photo" src={asset('photo').path} alt="The JS Cebu community at a meetup" />}
+              </div>
+              <RuleList items={s.rules} />
+            </li>
+          ))
+        }
+      </ol>
+    </Section>
+
+    <Section id="personalities" number="05" title="Personalities" tag="pick one per piece">
+      <p class="intro-copy">Three looks, kept distinct: different typefaces, layouts and moods. Yellow and the signatures tie them together. Each example below is the same HTML that brand.md gives agents.</p>
+      <div class="people">
+        {brand.personalities.map((p) => <PersonalityCard p={p} />)}
+      </div>
+    </Section>
+
+    <Section id="photos" number="06" title="Photos" tag="real, never filtered">
+      <p class="intro-copy">After every event, the facebook.com/javascriptcebu cover becomes a real photo from it. Only the sticker, a caption and a dark gradient go on top.</p>
+      <Frame title="Facebook cover template" src={asset('fb-cover').path} width={1640} height={624} />
+      <p class="jc-mono note"><a href={asset('fb-cover').path}>{asset('fb-cover').label}</a> · {asset('fb-cover').use}</p>
+    </Section>
+
+    <Section id="voice" number="07" title="Voice" tag="English first">
+      <RuleList items={brand.voice.principles} />
+      <div class="table-wrap">
+        <table class="phrases-table">
+          <thead>
+            <tr><th class="jc-label">Bisaya</th><th class="jc-label">English</th><th class="jc-label">Use</th><th class="jc-label">Status</th></tr>
+          </thead>
+          <tbody>
+            {
+              brand.voice.phrases.map((p) => (
+                <tr>
+                  <td class="bisaya">{p.bisaya}</td>
+                  <td>{p.english}</td>
+                  <td>{p.use}</td>
+                  <td><span class:list={['jc-mono', 'badge', p.status]}>{p.status === 'draft' ? 'draft, not yet approved' : 'approved'}</span></td>
+                </tr>
+              ))
+            }
+          </tbody>
+        </table>
+      </div>
+    </Section>
+
+    <Section id="downloads" number="08" title="Templates & downloads" tag="svg · png · html · css">
+      <ul class="downloads">
+        {
+          brand.assets.map((a) => (
+            <li>
+              <a class="jc-mono" href={a.path} download={a.path.endsWith('.html') ? undefined : ''}>↓ {a.path.replace('/brand/', '')}</a>
+              <span class="label">{a.label}</span>
+              <span class="use">{a.use}</span>
+            </li>
+          ))
+        }
+        <li>
+          <a class="jc-mono" href="/brand.md">→ brand.md</a>
+          <span class="label">These rules for AI agents</span>
+          <span class="use">Plain Markdown at a stable URL: {agentUrl}</span>
+        </li>
+      </ul>
+    </Section>
+
+    <Section id="changelog" number="09" title="Changelog">
+      {
+        brand.changelog.map((v) => (
+          <div class="version">
+            <h3 class="jc-mono">v{v.version} <span>{v.date}</span></h3>
+            <RuleList items={v.notes} />
+          </div>
+        ))
+      }
+    </Section>
   </main>
+
+  <footer class="wrap foot jc-mono">
+    <p>Code is MIT-licensed. The JavaScript Cebu name and logos are © JavaScript Cebu; use them as this page describes.</p>
+    <p><a href="https://github.com/javascriptcebu/jscebu.org">github.com/javascriptcebu/jscebu.org</a> · <a href="/llms.txt">llms.txt</a></p>
+  </footer>
 </Terminal>
+
+<script>
+  for (const button of document.querySelectorAll<HTMLButtonElement>('[data-copy]')) {
+    button.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(button.dataset.copy!);
+        button.textContent = 'Copied';
+      } catch {
+        button.textContent = button.dataset.copy!;
+      }
+      setTimeout(() => (button.textContent = 'Copy link'), 2000);
+    });
+  }
+</script>
+
+<style>
+  .wrap {
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 1120px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+  @media (max-width: 420px) {
+    .wrap {
+      padding: 0 16px;
+    }
+  }
+
+  /* nav */
+  .top {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    border-bottom: 1px solid var(--jc-line);
+    background: color-mix(in srgb, var(--jc-ink) 92%, transparent);
+    backdrop-filter: blur(8px);
+  }
+  .bar {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    height: 60px;
+  }
+  .home img {
+    display: block;
+    width: 120px;
+    height: auto;
+  }
+  .links {
+    display: none;
+    gap: 20px;
+    margin: 0 0 0 auto;
+    padding: 0;
+    list-style: none;
+    font-size: 13px;
+  }
+  .links a,
+  .agents {
+    color: var(--jc-muted);
+    text-decoration: none;
+  }
+  .links a:hover {
+    color: var(--jc-text);
+  }
+  .agents {
+    margin-left: auto;
+    color: var(--jc-accent);
+    font-size: 13px;
+  }
+  @media (min-width: 960px) {
+    .links {
+      display: flex;
+    }
+    .agents {
+      margin-left: 0;
+    }
+  }
+
+  /* intro */
+  .intro {
+    display: grid;
+    gap: 40px;
+    padding: 72px 0 56px;
+  }
+  @media (min-width: 960px) {
+    .intro {
+      grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+    }
+  }
+  .hero {
+    position: relative;
+  }
+  .kicker {
+    margin: 0;
+    font-size: 13px;
+    color: var(--jc-accent);
+  }
+  h1 {
+    margin: 14px 0 0;
+    max-width: 11ch;
+    font-size: clamp(44px, 9vw, 88px);
+    line-height: 1;
+    letter-spacing: -0.02em;
+    color: var(--jc-accent);
+  }
+  .lede {
+    max-width: 52ch;
+    margin: 20px 0 0;
+    font-size: 18px;
+  }
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 28px;
+  }
+  .btn {
+    padding: 11px 15px;
+    border-radius: 6px;
+    border: 1px solid var(--jc-muted);
+    background: none;
+    color: var(--jc-text);
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+  }
+  .btn.primary {
+    border-color: var(--jc-accent);
+    background: var(--jc-accent);
+    color: var(--jc-accent-text);
+  }
+  .btn.ghost {
+    border-color: var(--jc-line);
+    color: var(--jc-muted);
+  }
+  .hero :global(.hero-sticker) {
+    display: block;
+    margin: 40px 0 0 8px;
+  }
+  @media (min-width: 960px) {
+    .intro {
+      align-items: stretch;
+    }
+    .hero :global(.hero-sticker) {
+      position: absolute;
+      right: 32px;
+      bottom: 8px;
+      margin: 0;
+    }
+  }
+  .must {
+    padding: 24px;
+    border: 1px solid var(--jc-line);
+    border-radius: 12px;
+    background: color-mix(in srgb, var(--jc-text) 3%, var(--jc-ink));
+  }
+  .must h2 {
+    margin: 0 0 16px;
+    font-size: 13px;
+    color: var(--jc-accent);
+  }
+
+  .intro-copy {
+    max-width: 62ch;
+    margin: 0 0 24px;
+  }
+
+  /* logo */
+  .logos {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 240px), 1fr));
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+  .logo {
+    margin: 0;
+  }
+  .stage {
+    position: relative;
+    display: grid;
+    place-items: center;
+    height: 150px;
+    overflow: hidden;
+    border-radius: 8px;
+    border: 1px solid var(--jc-line);
+  }
+  .bg-paper .stage {
+    background: var(--jc-paper);
+  }
+  .bg-ink .stage {
+    background: var(--jc-ink);
+  }
+  .bg-yellow .stage {
+    background: var(--jc-yellow);
+  }
+  .backdrop {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+  .bg-photo .stage::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: color-mix(in srgb, var(--jc-ink) 45%, transparent);
+  }
+  .art {
+    position: relative;
+    z-index: 1;
+    width: 78%;
+    height: auto;
+  }
+  .art.mark {
+    width: auto;
+    height: 96px;
+  }
+  .art.tilt {
+    transform: rotate(-8deg);
+  }
+  figcaption {
+    display: grid;
+    gap: 2px;
+    margin-top: 10px;
+    font-size: 14px;
+  }
+  figcaption .jc-mono {
+    color: var(--jc-accent);
+    font-size: 13px;
+  }
+
+  /* color */
+  .swatches {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
+    gap: 24px;
+  }
+  .sub {
+    margin: 40px 0 16px;
+    font-size: 12px;
+  }
+  .pairs {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 200px), 1fr));
+    gap: 10px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .pairs li {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 2px 12px;
+    align-items: baseline;
+    padding: 14px;
+    border-radius: 8px;
+    border: 1px solid var(--jc-line);
+  }
+  .aa {
+    grid-row: span 2;
+    font-size: 32px;
+    font-weight: 700;
+    line-height: 1;
+  }
+  .ratio {
+    font-size: 13px;
+  }
+  .where {
+    font-size: 13px;
+  }
+
+  /* type */
+  .fonts {
+    display: grid;
+    gap: 0;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .fonts li {
+    padding: 24px 0;
+    border-bottom: 1px solid var(--jc-line);
+  }
+  .fonts li:first-child {
+    padding-top: 0;
+  }
+  .meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 16px;
+    margin-bottom: 8px;
+    font-size: 13px;
+  }
+  .family {
+    color: var(--jc-accent);
+  }
+  .weights {
+    color: var(--jc-muted);
+  }
+  .specimen {
+    margin: 0;
+    font-family: var(--face);
+    font-size: clamp(22px, 4.4vw, 40px);
+    line-height: 1.2;
+    overflow-wrap: anywhere;
+  }
+  .wordmark {
+    display: block;
+    width: min(100%, 420px);
+    height: auto;
+    margin: 8px 0;
+  }
+  .role {
+    max-width: 62ch;
+    margin: 10px 0 0;
+    color: var(--jc-muted);
+  }
+  .gf {
+    display: inline-block;
+    margin-top: 6px;
+    font-size: 13px;
+  }
+
+  /* signatures */
+  .sigs {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 16px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  @media (min-width: 760px) {
+    .sigs {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  .sig {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    padding: 24px;
+    border: 1px solid var(--jc-line);
+    border-radius: 12px;
+    background: color-mix(in srgb, var(--jc-text) 3%, var(--jc-ink));
+  }
+  .sig-head {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+  }
+  .rank {
+    color: var(--jc-accent);
+    font-size: 13px;
+  }
+  .sig h3 {
+    margin: 0;
+    font-size: 22px;
+  }
+  .badge {
+    margin-left: auto;
+    padding: 2px 8px;
+    border-radius: 999px;
+    border: 1px solid var(--jc-line);
+    font-size: 11px;
+    color: var(--jc-muted);
+    white-space: nowrap;
+  }
+  .badge.experimental,
+  .badge.draft {
+    border-color: var(--jc-accent);
+    color: var(--jc-accent);
+  }
+  .summary {
+    margin: 0;
+  }
+  .demo {
+    display: grid;
+    place-items: center;
+    min-height: 120px;
+    padding: 16px;
+    border-radius: 8px;
+    background: var(--jc-ink);
+    border: 1px solid var(--jc-line);
+  }
+  .snippet {
+    font-family: var(--jc-font-mono);
+    font-size: 12px;
+    color: var(--jc-accent);
+    overflow-wrap: anywhere;
+  }
+  .demo-sticker {
+    width: 96px;
+    height: auto;
+  }
+  .phrases {
+    margin: 0;
+    color: var(--jc-accent);
+    text-align: center;
+  }
+  .demo-photo {
+    width: 100%;
+    max-height: 160px;
+    border-radius: 6px;
+  }
+
+  /* personalities */
+  .people {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 24px;
+  }
+
+  /* photos */
+  .note {
+    margin: 12px 0 0;
+    font-size: 13px;
+    color: var(--jc-muted);
+  }
+
+  /* voice */
+  .table-wrap {
+    margin-top: 32px;
+    overflow-x: auto;
+  }
+  .phrases-table {
+    width: 100%;
+    min-width: 560px;
+    border-collapse: collapse;
+  }
+  th,
+  td {
+    padding: 12px 12px 12px 0;
+    border-bottom: 1px solid var(--jc-line);
+    text-align: left;
+    vertical-align: baseline;
+  }
+  th {
+    font-size: 12px;
+    font-weight: 400;
+  }
+  .bisaya {
+    font-weight: 700;
+    color: var(--jc-accent);
+  }
+
+  /* downloads */
+  .downloads {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr));
+    gap: 0 32px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .downloads li {
+    display: grid;
+    gap: 2px;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--jc-line);
+  }
+  .downloads a {
+    font-size: 14px;
+    text-decoration: none;
+    overflow-wrap: anywhere;
+  }
+  .downloads .label {
+    font-weight: 700;
+  }
+  .downloads .use {
+    font-size: 14px;
+    color: var(--jc-muted);
+  }
+
+  /* changelog */
+  .version h3 {
+    margin: 0 0 12px;
+    font-size: 16px;
+    color: var(--jc-accent);
+  }
+  .version h3 span {
+    color: var(--jc-muted);
+  }
+
+  .foot {
+    padding-top: 32px;
+    padding-bottom: 56px;
+    border-top: 1px solid var(--jc-line);
+    font-size: 13px;
+    color: var(--jc-muted);
+  }
+  .foot p {
+    margin: 0 0 6px;
+  }
+</style>
