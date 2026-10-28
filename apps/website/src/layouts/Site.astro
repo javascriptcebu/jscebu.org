@@ -21,7 +21,93 @@ const { title, description, current, index } = Astro.props;
   <SiteFooter />
 </Terminal>
 
+<script>
+  // Sections marked data-reveal fade up as they scroll in. Content stays visible without JS
+  // or under reduced motion, because only this script adds the .motion class that hides it.
+  const targets = document.querySelectorAll('[data-reveal]');
+  if (targets.length && 'IntersectionObserver' in window && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    document.documentElement.classList.add('motion');
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (!entry.isIntersecting) continue;
+          entry.target.classList.add('is-in');
+          io.unobserve(entry.target);
+        }
+      },
+      { rootMargin: '0px 0px -10% 0px', threshold: 0.1 },
+    );
+    targets.forEach((el) => io.observe(el));
+  }
+</script>
+
 <style is:global>
+  :root {
+    --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+    --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+  }
+
+  /* Motion: a little, and only for people who haven't asked for less (see .impeccable.md). */
+  @media (prefers-reduced-motion: no-preference) {
+    /* Headline words arrive like terminal output; the cursor is already waiting at the end. */
+    .rise {
+      display: inline-block;
+      animation: rise 700ms var(--ease-out-expo) calc(120ms + var(--i, 0) * 70ms) backwards;
+    }
+    .page-head > :not(h1) {
+      animation: fade-up 600ms var(--ease-out-expo) 380ms backwards;
+    }
+    .page-head > .jc-label {
+      animation-delay: 0ms;
+    }
+    .motion [data-reveal] {
+      opacity: 0;
+      transform: translateY(18px);
+      transition:
+        opacity 600ms var(--ease-out-quart),
+        transform 700ms var(--ease-out-expo);
+      transition-delay: calc(var(--i, 0) * 80ms);
+    }
+    .motion [data-reveal].is-in {
+      opacity: 1;
+      transform: none;
+    }
+    .btn {
+      transition:
+        transform 150ms var(--ease-out-quart),
+        border-color 200ms;
+    }
+    .btn:active {
+      transform: scale(0.97);
+    }
+    .lift {
+      transition:
+        transform 250ms var(--ease-out-quart),
+        border-color 200ms;
+    }
+  }
+  @media (prefers-reduced-motion: no-preference) and (hover: hover) {
+    .btn:hover {
+      transform: translateY(-1px);
+    }
+    .lift:hover {
+      transform: translateY(-3px);
+      border-color: var(--jc-accent);
+    }
+  }
+  @keyframes rise {
+    from {
+      opacity: 0;
+      transform: translateY(0.4em);
+    }
+  }
+  @keyframes fade-up {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+  }
+
   main {
     min-height: calc(100vh - 280px);
   }

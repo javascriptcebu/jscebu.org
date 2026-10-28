@@ -12,7 +12,7 @@ const organizers = (await getCollection('organizers')).sort((a, b) => a.data.ord
   <div class="wrap">
     <header class="page-head">
       <p class="jc-label">// about</p>
-      <h1 class="jc-headline"><Cursor text={page.data.title} blink /></h1>
+      <h1 class="jc-headline"><Cursor text={page.data.title} blink animate /></h1>
     </header>
     <div class="prose">
       <Content />
@@ -21,8 +21,8 @@ const organizers = (await getCollection('organizers')).sort((a, b) => a.data.ord
       <h2 class="jc-label">Organizers</h2>
       <ul>
         {
-          organizers.map(({ data }) => (
-            <li>
+          organizers.map(({ data }, i) => (
+            <li data-reveal style={`--i: ${i}`}>
               <span class="name">{data.name}</span>
               <span class="jc-mono role">
                 {data.role}

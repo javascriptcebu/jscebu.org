@@ -10,13 +10,13 @@ const links = (await getCollection('links')).sort((a, b) => a.data.order - b.dat
   <div class="wrap">
     <header class="page-head">
       <p class="jc-label">// official links</p>
-      <h1 class="jc-headline"><Cursor text="Find JS Cebu" blink /></h1>
+      <h1 class="jc-headline"><Cursor text="Find JS Cebu" blink animate /></h1>
     </header>
     <ul class="links">
       {
-        links.map(({ data }) => (
-          <li>
-            <a href={data.url}>
+        links.map(({ data }, i) => (
+          <li data-reveal style={`--i: ${i}`}>
+            <a class="lift" href={data.url}>
               <span class="label">{data.label}</span>
               {data.handle && <span class="jc-mono handle">{data.handle}</span>}
               <span class="jc-mono go" aria-hidden="true">↗</span>

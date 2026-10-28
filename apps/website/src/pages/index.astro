@@ -26,24 +26,24 @@ const work = [
     <section id="hero" class="hero">
       <div class="copy">
         <p class="jc-label kicker">// cebu's javascript community</p>
-        <h1 class="jc-headline"><Cursor text="Build things. Ship them. Together" blink /></h1>
+        <h1 class="jc-headline"><Cursor text="Build things. Ship them. Together" blink animate /></h1>
         <p class="lede">Meetups, workshops and Hacktoberfest, run by developers in Cebu.</p>
         <div class="actions">
           <a class="btn primary jc-mono" href="#events">Upcoming events ↓</a>
           <a class="btn jc-mono" href="#join">Join us</a>
         </div>
       </div>
-      <Sticker size="clamp(120px, 22vw, 232px)" class="hero-sticker" alt="" />
+      <Sticker size="clamp(120px, 22vw, 232px)" class="hero-sticker" alt="" slap delay={750} />
     </section>
 
     <section id="what-we-do" class="block">
-      <h2 class="jc-label">What we do</h2>
+      <h2 class="jc-label" data-reveal>What we do</h2>
       <ul class="cards">
         {
-          work.map((w) => (
-            <li>
+          work.map((w, i) => (
+            <li data-reveal style={`--i: ${i + 1}`}>
               {w.href ? (
-                <a href={w.href}>
+                <a class="lift" href={w.href}>
                   <h3>{w.title} ↗</h3>
                   <p>{w.text}</p>
                 </a>
@@ -59,7 +59,7 @@ const work = [
       </ul>
     </section>
 
-    <section id="events" class="block">
+    <section id="events" class="block" data-reveal>
       <h2 class="jc-label">Upcoming events</h2>
       <p class="big">Our next meetups and workshops, along with every other Cebu tech event, are on Cebby.</p>
       <div class="actions">
@@ -68,7 +68,7 @@ const work = [
       </div>
     </section>
 
-    <section id="projects" class="block">
+    <section id="projects" class="block" data-reveal>
       <h2 class="jc-label">Featured project</h2>
       <div class="projects">
         {featured.map((entry) => <ProjectCard entry={entry} />)}
@@ -76,14 +76,14 @@ const work = [
       <a class="jc-mono more" href="/projects/">All projects →</a>
     </section>
 
-    <section id="community" class="block">
+    <section id="community" class="block" data-reveal>
       <figure class="photo">
         <img class="jc-photo" src={photo} alt="The JS Cebu community at a meetup" width="1728" height="1296" loading="lazy" />
         <figcaption class="jc-label">The JS Cebu community at a meetup</figcaption>
       </figure>
     </section>
 
-    <section id="join" class="block">
+    <section id="join" class="block" data-reveal>
       <h2 class="jc-label">Join us</h2>
       <p class="big">Come to a meetup, follow along online, or say hello.</p>
       <ul class="join">
@@ -146,6 +146,18 @@ const work = [
       top: 96px;
       right: 24px;
       margin: 0;
+    }
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .kicker {
+      animation: fade-up 600ms var(--ease-out-expo) backwards;
+    }
+    .lede {
+      animation: fade-up 600ms var(--ease-out-expo) 450ms backwards;
+    }
+    .copy .actions {
+      animation: fade-up 600ms var(--ease-out-expo) 560ms backwards;
     }
   }
 

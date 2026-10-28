@@ -11,11 +11,11 @@ const projects = (await getCollection('projects')).sort((a, b) => a.data.order -
   <div class="wrap">
     <header class="page-head">
       <p class="jc-label">// projects</p>
-      <h1 class="jc-headline"><Cursor text="Community projects" blink /></h1>
+      <h1 class="jc-headline"><Cursor text="Community projects" blink animate /></h1>
       <p>Things the JS Cebu community builds and runs, in the open.</p>
     </header>
     <div class="grid">
-      {projects.map((entry) => <ProjectCard entry={entry} full />)}
+      {projects.map((entry, i) => <div data-reveal style={`--i: ${i}`}><ProjectCard entry={entry} full /></div>)}
     </div>
   </div>
 </Site>

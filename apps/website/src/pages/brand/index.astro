@@ -50,14 +50,14 @@ const sample = 'Aa Bb Cc 0123456789';
     <section id="intro" class="intro">
       <div class="hero">
         <p class="jc-label kicker">// brand · v{brand.version}</p>
-        <h1 class="jc-headline"><Cursor text="How JS Cebu looks" blink /></h1>
+        <h1 class="jc-headline"><Cursor text="How JS Cebu looks" blink animate /></h1>
         <p class="lede">Everything you need to make something for JavaScript Cebu: logos, colors, type, rules and templates. Using an AI agent? Give it the brand.md link. It has the same rules in a form agents can follow.</p>
         <div class="actions">
           <a class="btn primary jc-mono" href="#downloads">Download logos ↓</a>
           <a class="btn jc-mono" href="/brand.md">For agents: /brand.md</a>
           <button class="btn ghost jc-mono" type="button" data-copy={agentUrl}>Copy link</button>
         </div>
-        <Sticker size="clamp(88px, 22vw, 168px)" class="hero-sticker" alt="" />
+        <Sticker size="clamp(88px, 22vw, 168px)" class="hero-sticker" alt="" slap delay={650} />
       </div>
 
       <div class="must">

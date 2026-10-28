@@ -1,23 +1,58 @@
 ---
-/** The logo as a tilted die-cut sticker. The brand allows 6–10° either way. */
+/** The logo as a tilted die-cut sticker. The brand allows 6–10° either way. `slap` sticks it on as the page loads. */
 interface Props {
   size: string;
   tilt?: number;
   alt?: string;
   class?: string;
+  slap?: boolean;
+  /** When the slap starts, so it can land after the headline. */
+  delay?: number;
 }
 
-const { size, tilt = -8, alt = '', class: className } = Astro.props;
+const { size, tilt = -8, alt = '', class: className, slap = false, delay = 600 } = Astro.props;
 if (Math.abs(tilt) < 6 || Math.abs(tilt) > 10) {
   throw new Error(`Sticker tilt must be 6–10° either way, got ${tilt}`);
 }
 ---
 
 <img
-  class:list={['jc-sticker', className]}
+  class:list={['jc-sticker', 'sticker', { slap }, className]}
   src="/brand/logo/sticker.svg"
   alt={alt}
   width="1106"
   height="1107"
-  style={`width: ${size}; height: auto; transform: rotate(${tilt}deg);`}
+  style={`--tilt: ${tilt}deg; --slap-delay: ${delay}ms; width: ${size}; height: auto;`}
 />
+
+<style>
+  img.jc-sticker.sticker {
+    transform: rotate(var(--tilt));
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    img.jc-sticker.sticker {
+      transition: transform 300ms var(--ease-out-quart);
+    }
+    img.jc-sticker.slap {
+      animation: sticker-slap 650ms var(--ease-out-expo) var(--slap-delay) backwards;
+    }
+  }
+  @media (prefers-reduced-motion: no-preference) and (hover: hover) {
+    /* A corner lifting, like a sticker you could peel. */
+    img.jc-sticker.sticker:hover {
+      transform: rotate(calc(var(--tilt) + 5deg)) scale(1.04);
+    }
+  }
+  @keyframes sticker-slap {
+    from {
+      opacity: 0;
+      transform: rotate(calc(var(--tilt) + 14deg)) scale(1.45);
+    }
+    35% {
+      opacity: 1;
+    }
+    to {
+      transform: rotate(var(--tilt)) scale(1);
+    }
+  }
+</style>
