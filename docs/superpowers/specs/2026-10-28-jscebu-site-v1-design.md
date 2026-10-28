@@ -105,6 +105,14 @@ Recorded so v1 doesn't paint it into a corner. This gets built in its own releas
   - JS Cebu is in the data (`javascript-cebu`).
   - Existing routes live under `src/pages/api/`.
 - **[Builder, then]** Fetch at build time with a content loader, or per request with a live collection, which needs the Cloudflare adapter. Decide when building it.
+- **[Decided, input for that release]** "We've got lots of events and I don't want to build it in a way that's one list of top to bottom."
+  - Dorell shared the Facebook past-events page on 2026-10-28. It holds about 50 events, from Jan 2019 to Oct 2026.
+  - **Series:** React Series: Zero to Hero 1–5 plus a hackathon (2019); six AI4Devs Workshops (Jun 2025); Automated Testing workshops (2024–2025).
+  - **Hacktoberfest Cebu stages, per edition:** kickoff or opening, online midpoint, deployment day, awarding. Editions ran 2020, 2021, 2023, 2024, 2025 and 2026.
+  - **Hosts besides JS Cebu:** React Cebu, Vue.js Cebu, DEVCON Cebu, enspace Cebu, PWA Pilipinas, Cebu Tech Communities.
+  - **Recurring venues:** DOST Cebu PSTO, enspace Cebu, LegalMatch, Zero-Ten Park.
+  - **Facebook lists some events twice.**
+  - The browse design (grouping by year, series or edition, filters, highlights) is decided in that release, not v1.
 
 ## 7. Going live
 
