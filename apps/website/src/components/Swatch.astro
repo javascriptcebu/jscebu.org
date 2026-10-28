@@ -1,0 +1,54 @@
+---
+import type { Hex } from '@jscebu/brand';
+
+interface Props {
+  name: string;
+  hex: Hex;
+  variable?: string;
+  role?: string;
+}
+
+const { name, hex, variable, role } = Astro.props;
+---
+
+<figure class="swatch">
+  <div class="chip" style={`background: ${hex}`}></div>
+  <figcaption>
+    <span class="jc-mono name">{name}</span>
+    <span class="jc-mono hex">{hex}</span>
+    {variable && <code>{variable}</code>}
+    {role && <p>{role}</p>}
+  </figcaption>
+</figure>
+
+<style>
+  .swatch {
+    margin: 0;
+  }
+  .chip {
+    height: 112px;
+    border-radius: 8px;
+    border: 1px solid var(--jc-line);
+  }
+  figcaption {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 12px;
+    align-items: baseline;
+    margin-top: 12px;
+  }
+  .name {
+    font-weight: 600;
+  }
+  .hex,
+  code {
+    font-family: var(--jc-font-mono);
+    font-size: 13px;
+    color: var(--jc-muted);
+  }
+  p {
+    flex-basis: 100%;
+    margin: 4px 0 0;
+    font-size: 15px;
+  }
+</style>

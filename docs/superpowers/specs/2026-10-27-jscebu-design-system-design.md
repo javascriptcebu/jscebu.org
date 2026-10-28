@@ -87,7 +87,7 @@ Success means **you send one link, and what comes back is recognizably JS Cebu w
 | Full-color mark | The source of the sticker |
 | Flat lockup, light | Mark plus black "JAVASCRIPT / CEBU" wordmark, on light backgrounds |
 | Flat lockup, dark | Mark plus white wordmark, on dark backgrounds |
-| One-color mark and lockup, ink and white | Required on yellow backgrounds. The white separators and ring gap become **see-through**, so the background shows through the "JS" lines (prototyped and approved in the brainstorm). |
+| One-color mark and lockup, ink and white | Required on yellow backgrounds. The white separators and ring gap become **see-through**, so the background shows through the "JS" lines (prototyped and approved in the brainstorm). **[Proposed amendment, 2026-10-28, awaiting Dorell's confirmation]** On yellow, use **ink**: white on yellow is only 1.3:1. White one-color is for dark backgrounds and photos. |
 | Sticker | The full-color mark with a white die-cut outline and an optional soft shadow (§4.3) |
 
 **Source: the original PSD.** Dorell provided it on 2026-10-27, at `~/Downloads/js-cebu-logo.psd` (1166×1299, RGBA, sha256 `d7c26803…2ad2dab`).

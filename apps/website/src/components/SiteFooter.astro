@@ -1,0 +1,60 @@
+---
+import { brand } from '@jscebu/brand';
+
+const links = [
+  ['/projects/', 'Projects'],
+  ['/about/', 'About'],
+  ['/links/', 'Links'],
+  ['/brand/', 'Brand'],
+  ['/brand.md', 'brand.md'],
+  ['/llms.txt', 'llms.txt'],
+  ['https://github.com/javascriptcebu/jscebu.org', 'GitHub'],
+];
+const mark = brand.assets.find((a) => a.id === 'mark-color')!.path;
+---
+
+<footer class="site-foot">
+  <div class="wrap">
+    <a href="/" class="mark"><img src={mark} alt="JavaScript Cebu" width="1005" height="1006" /></a>
+    <ul class="jc-mono">
+      {links.map(([href, label]) => <li><a href={href}>{label}</a></li>)}
+    </ul>
+    <p class="jc-mono legal">
+      Code is MIT-licensed. The JavaScript Cebu name and logos are © JavaScript Cebu; use them as <a href="/brand/">/brand</a> describes.
+    </p>
+  </div>
+</footer>
+
+<style>
+  .site-foot {
+    margin-top: 40px;
+    padding: 40px 0 56px;
+    border-top: 1px solid var(--jc-line);
+  }
+  .mark img {
+    display: block;
+    width: 36px;
+    height: auto;
+  }
+  ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 20px;
+    margin: 20px 0 0;
+    padding: 0;
+    list-style: none;
+    font-size: 13px;
+  }
+  ul a {
+    color: var(--jc-text);
+    text-decoration: none;
+  }
+  ul a:hover {
+    color: var(--jc-accent);
+  }
+  .legal {
+    margin: 20px 0 0;
+    font-size: 12px;
+    color: var(--jc-muted);
+  }
+</style>

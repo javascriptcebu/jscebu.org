@@ -1,0 +1,63 @@
+<!doctype html>
+<!--
+  JS Cebu Facebook cover: the post-event ritual. Terminal personality over a real photo.
+  Rules: https://www.jscebu.org/brand.md
+
+  Size: 1640×624, which is Facebook's 820×312 desktop cover at 2×. Mobile shows
+  640×360 and crops the sides, so the sticker and caption stay inside the central
+  1280×624 (640×312 at 2×). The profile picture overlaps the bottom-left corner,
+  so nothing goes there. Sizes checked 2026-10-28 against
+  https://contentstudio.io/blog/facebook-cover-photo-size and
+  https://socialsizes.io/facebook-cover-photo-size/ (Facebook publishes no official
+  safe zone); preview it on facebook.com/javascriptcebu before you publish.
+
+  How to use: swap the photo for a real, unfiltered one from the event, change the
+  text marked EDIT, then render #cover to a 1640×624 PNG. If you copy this file
+  elsewhere, prefix the /brand/ URLs with https://www.jscebu.org.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>JS Cebu Facebook cover</title>
+<link rel="stylesheet" href="/brand/tokens.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;700&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+  html, body { margin: 0; }
+  #cover { position: relative; width: 1640px; height: 624px; overflow: hidden; }
+  #cover .jc-photo { position: absolute; inset: 0; width: 100%; height: 100%; object-position: center 45%; }
+  /* A dark gradient for legibility: the only thing besides the sticker and caption allowed on a photo. */
+  #cover .shade {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top,
+      color-mix(in srgb, var(--jc-ink) 88%, transparent) 0%,
+      color-mix(in srgb, var(--jc-ink) 55%, transparent) 30%,
+      transparent 65%);
+  }
+  #cover .jc-sticker { position: absolute; top: 40px; right: 220px; width: 168px; }
+  #cover .caption { position: absolute; right: 220px; bottom: 48px; text-align: right; }
+  #cover .jc-label { margin: 0; font-size: 24px; color: var(--jc-yellow); }
+  #cover h1 {
+    margin: 10px 0 0;
+    font-size: 92px;
+    line-height: 1;
+    letter-spacing: -.02em;
+    color: var(--jc-yellow);
+  }
+</style>
+</head>
+<body>
+<article id="cover" class="jc-terminal">
+  <!-- EDIT: a real, unfiltered photo from the event -->
+  <img class="jc-photo" src="/brand/photos/community-meetup.jpg" alt="The JS Cebu community at a meetup">
+  <div class="shade"></div>
+  <img class="jc-sticker" src="/brand/logo/sticker.svg" alt="JavaScript Cebu">
+  <div class="caption">
+    <!-- EDIT: event · date · place -->
+    <p class="jc-label">Meetup · Nov 21, 2026 · Cebu City</p>
+    <!-- EDIT: the sign-off. Keep the last word and the cursor inside .jc-nw. Bisaya only once Dorell has approved the phrase (see brand.md, Voice). -->
+    <h1 class="jc-headline">Thank you, <span class="jc-nw">Cebu<span class="jc-cursor" aria-hidden="true"></span></span></h1>
+  </div>
+</article>
+</body>
+</html>

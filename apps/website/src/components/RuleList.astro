@@ -1,0 +1,52 @@
+---
+import { inline } from '../lib/view';
+
+interface Props {
+  items: string[];
+  tone?: 'plain' | 'check' | 'dont';
+}
+
+const { items, tone = 'plain' } = Astro.props;
+---
+
+<ul class:list={['rules', tone]}>
+  {items.map((text) => <li>{inline(text).map(({ part, code }) => (code ? <code>{part}</code> : part))}</li>)}
+</ul>
+
+<style>
+  .rules {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    gap: 10px;
+  }
+  li {
+    position: relative;
+    padding-left: 26px;
+  }
+  li::before {
+    content: '→';
+    position: absolute;
+    left: 0;
+    font-family: var(--jc-font-mono);
+    color: var(--jc-muted);
+  }
+  .check li::before {
+    content: '';
+    top: 0.3em;
+    width: 12px;
+    height: 12px;
+    border: 1.5px solid var(--jc-accent);
+    border-radius: 2px;
+  }
+  .dont li::before {
+    content: '✕';
+    color: var(--jc-muted);
+  }
+  code {
+    font-family: var(--jc-font-mono);
+    font-size: 0.9em;
+    color: var(--jc-accent);
+  }
+</style>

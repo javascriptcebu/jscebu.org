@@ -1,0 +1,59 @@
+---
+/** A scaled-to-fit iframe for a fixed-size piece (an example or a template). */
+interface Props {
+  width: number;
+  height: number;
+  title: string;
+  src?: string;
+  srcdoc?: string;
+}
+
+const { width, height, title, src, srcdoc } = Astro.props;
+---
+
+<div class="frame" data-width={width} data-height={height} style={`width: min(100%, ${width + 2}px)`}>
+  <iframe {title} {src} {srcdoc} width={width} height={height} loading="lazy" sandbox="allow-same-origin"></iframe>
+</div>
+
+<style>
+  .frame {
+    box-sizing: border-box;
+    max-width: 100%;
+    overflow: auto;
+    border-radius: 8px;
+    border: 1px solid var(--jc-line);
+  }
+  .frame:global(.fitted) {
+    overflow: hidden;
+  }
+  iframe {
+    display: block;
+    border: 0;
+    transform-origin: 0 0;
+  }
+</style>
+
+<script>
+  function fit(wrap: HTMLElement) {
+    const frame = wrap.querySelector('iframe')!;
+    const width = Number(wrap.dataset.width);
+    const height = frame.contentDocument?.documentElement.scrollHeight || Number(wrap.dataset.height);
+    const scale = Math.min(1, wrap.clientWidth / width);
+    frame.style.width = `${width}px`;
+    frame.style.height = `${height}px`;
+    frame.style.transform = `scale(${scale})`;
+    wrap.style.height = `${Math.ceil(height * scale) + 2}px`;
+    wrap.classList.add('fitted');
+  }
+
+  const frames = [...document.querySelectorAll<HTMLElement>('.frame')];
+  for (const wrap of frames) {
+    const frame = wrap.querySelector('iframe')!;
+    frame.addEventListener('load', () => {
+      fit(wrap);
+      setTimeout(() => fit(wrap), 600);
+    });
+    fit(wrap);
+  }
+  addEventListener('resize', () => frames.forEach(fit));
+</script>

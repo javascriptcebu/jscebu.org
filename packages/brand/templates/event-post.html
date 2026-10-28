@@ -1,0 +1,74 @@
+<!doctype html>
+<!--
+  JS Cebu event post: Poster personality, 1080×1080.
+  Rules: https://www.jscebu.org/brand.md
+
+  How to use: change the text marked EDIT, keep everything else, then render it
+  to a 1080×1080 PNG (for example, open it in Chrome and take a node screenshot
+  of #post). If you copy this file elsewhere, prefix the /brand/ URLs with
+  https://www.jscebu.org.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>JS Cebu event post</title>
+<link rel="stylesheet" href="/brand/tokens.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;900&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+  html, body { margin: 0; }
+  #post {
+    position: relative;
+    box-sizing: border-box;
+    width: 1080px;
+    height: 1080px;
+    padding: 76px 76px 0;
+    overflow: hidden;
+  }
+  #post .jc-sticker { position: absolute; top: 60px; right: 64px; width: 220px; }
+  #post .jc-label { margin: 0; font-size: 26px; }
+  #post h1 {
+    margin: 150px 0 0;
+    max-width: 780px;
+    font-size: 112px;
+    line-height: .9;
+    letter-spacing: -.02em;
+  }
+  #post ol { margin: 56px 0 0; padding: 0; list-style: none; }
+  #post li { display: flex; gap: 22px; align-items: baseline; margin-top: 16px; font-size: 34px; }
+  #post li .jc-mono { font-size: 24px; }
+  #post footer {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: 34px 76px;
+    background: var(--jc-ink);
+    color: var(--jc-yellow);
+  }
+  #post .jc-event-line { margin: 0; font-size: 28px; }
+</style>
+</head>
+<body>
+<article id="post" class="jc-poster">
+  <img class="jc-sticker" src="/brand/logo/sticker.svg" alt="JavaScript Cebu">
+
+  <!-- EDIT: event type · month -->
+  <p class="jc-label">Meetup · Nov 2026</p>
+
+  <!-- EDIT: the headline. Keep the last word and the cursor inside .jc-nw. -->
+  <h1 class="jc-headline">Ship faster with AI <span class="jc-nw">agents<span class="jc-cursor" aria-hidden="true"></span></span></h1>
+
+  <!-- EDIT: up to 3 agenda lines; delete the ones you don't need. -->
+  <ol>
+    <li><span class="jc-mono">01</span><span>Building agents with the AI SDK</span></li>
+    <li><span class="jc-mono">02</span><span>Testing what the agent wrote</span></li>
+    <li><span class="jc-mono">03</span><span>Lightning talks and pizza</span></li>
+  </ol>
+
+  <footer>
+    <!-- EDIT: WHEN · WHERE · JSCEBU.ORG -->
+    <p class="jc-event-line">Sat Nov 21 · 2PM · Cebu City · jscebu.org</p>
+  </footer>
+</article>
+</body>
+</html>

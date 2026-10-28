@@ -1,0 +1,6 @@
+[
+  { "id": "cyrus-hiyas", "name": "Cyrus Hiyas", "role": "Lead", "community": "Angular Cebu", "order": 1 },
+  { "id": "dorell-james", "name": "Dorell James", "role": "Lead", "community": "React Cebu", "order": 2 },
+  { "id": "harlequin-doyon", "name": "Harlequin Doyon", "role": "Lead", "community": "Vue.js Cebu", "order": 3 },
+  { "id": "sieg-balona", "name": "Sieg Balona", "role": "Co-Lead", "community": "React Cebu", "order": 4 }
+]

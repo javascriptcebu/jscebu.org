@@ -1,0 +1,34 @@
+---
+/**
+ * A headline's text with the brand cursor after the last word. The last word and
+ * the cursor share a .jc-nw wrapper so the cursor can never wrap onto its own line.
+ * With `animate`, each word rises in turn (styles in Site.astro); the cursor is there from the start.
+ */
+interface Props {
+  text: string;
+  blink?: boolean;
+  animate?: boolean;
+}
+
+const { text, blink = false, animate = false } = Astro.props;
+const words = text.trim().split(/\s+/);
+const last = words.pop()!;
+const cursorClass = ['jc-cursor', { 'jc-cursor--blink': blink }];
+---
+
+{
+  animate ? (
+    <>
+      {words.map((word, i) => (
+        <>
+          <span class="rise" style={`--i: ${i}`}>{word}</span>{' '}
+        </>
+      ))}
+      <span class="jc-nw"><span class="rise" style={`--i: ${words.length}`}>{last}</span><span class:list={cursorClass} aria-hidden="true"></span></span>
+    </>
+  ) : (
+    <>
+      {words.length ? `${words.join(' ')} ` : ''}<span class="jc-nw">{last}<span class:list={cursorClass} aria-hidden="true"></span></span>
+    </>
+  )
+}

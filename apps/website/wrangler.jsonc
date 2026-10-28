@@ -1,0 +1,16 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "jscebu-org",
+  "main": "worker/index.ts",
+  "compatibility_date": "2026-10-28",
+  "workers_dev": true,
+  // Static assets are served first; the Worker only runs when no asset matches.
+  "assets": {
+    "directory": "./dist",
+    "binding": "ASSETS",
+    "not_found_handling": "404-page"
+  },
+  // www.jscebu.org is attached as a Workers Custom Domain (Cloudflare manages its DNS
+  // record and certificate). The apex jscebu.org still redirects to www via Vercel.
+  "routes": [{ "pattern": "www.jscebu.org", "custom_domain": true }]
+}
