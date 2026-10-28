@@ -23,7 +23,7 @@ describe('public/_redirects', () => {
       { from: '/community-projects', to: '/projects/', status: 301 },
       { from: '/events', to: '/#events', status: 302 },
       { from: '/promotional-materials', to: '/brand/', status: 301 },
-      { from: '/annual-hacktoberfest', to: 'https://hacktoberfest.jscebu.org', status: 301 },
+      { from: '/annual-hacktoberfest', to: 'https://hacktoberfest.jscebu.org/', status: 301 },
       { from: '/volunteers-training-workshop', to: '/about/', status: 301 },
     ]);
   });

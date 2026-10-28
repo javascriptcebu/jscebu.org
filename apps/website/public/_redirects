@@ -9,5 +9,5 @@
 # Temporary: /events becomes a real page once events come from Cebby.
 /events /#events 302
 /promotional-materials /brand/ 301
-/annual-hacktoberfest https://hacktoberfest.jscebu.org 301
+/annual-hacktoberfest https://hacktoberfest.jscebu.org/ 301
 /volunteers-training-workshop /about/ 301
