@@ -4,6 +4,11 @@
   "main": "worker/index.ts",
   "compatibility_date": "2026-10-28",
   "workers_dev": true,
+  // Wrangler builds the site before every deploy and preview, so CI needs no separate build step.
+  // `pnpm install` is a no-op when dependencies are already installed.
+  "build": {
+    "command": "pnpm install --frozen-lockfile && pnpm run build"
+  },
   // Static assets are served first; the Worker only runs when no asset matches.
   "assets": {
     "directory": "./dist",

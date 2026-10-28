@@ -22,7 +22,7 @@ Every change, from a person or an AI agent, follows the same path:
 | Setting | Value |
 |---|---|
 | Root directory | repo root |
-| Build command | `pnpm install --frozen-lockfile && pnpm test && pnpm --filter website build` |
+| Build command | optional: `apps/website/wrangler.jsonc` has a `build.command` that installs, builds the site and runs the post-build checks before every deploy and preview |
 | Deploy command | `pnpm --filter website exec wrangler deploy` |
 | Other branches | `npx wrangler preview` (Cloudflare's default; gives each branch a preview URL, and needs the `previews` block in `wrangler.jsonc`) |
 
