@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { brand } from '@jscebu/brand';
-import { findCursorViolations, findLiterals, findMissingLinks, findParityGaps, parityRules } from '../scripts/check-dist.ts';
+import { findCursorViolations, findLiterals, findMissingLinks, findParityGaps, isSourceText, parityRules } from '../scripts/check-dist.ts';
 
 const cursor = '<span class="jc-cursor" aria-hidden="true"></span>';
 
@@ -74,5 +74,12 @@ describe('parityRules', () => {
     ];
     expect(rules).toEqual(expect.arrayContaining(expected));
     expect(rules).toHaveLength(expected.length);
+  });
+});
+
+describe('isSourceText', () => {
+  it('scans source files for literals but not images', () => {
+    expect(['a.astro', 'b.ts', 'c.css', 'd.mjs', 'e.md', 'f.json'].map(isSourceText)).toEqual([true, true, true, true, true, true]);
+    expect(['g.jpg', 'h.png', 'i.webp', 'j.svg', 'k.woff2'].map(isSourceText)).toEqual([false, false, false, false, false]);
   });
 });

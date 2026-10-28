@@ -23,10 +23,13 @@ const organizers = (await getCollection('organizers')).sort((a, b) => a.data.ord
         {
           organizers.map(({ data }, i) => (
             <li data-reveal style={`--i: ${i}`}>
-              <span class="name">{data.name}</span>
-              <span class="jc-mono role">
-                {data.role}
-                {data.community && ` · ${data.community}`}
+              {data.photo && <img class="jc-photo face" src={data.photo.src} width="64" height="64" alt="" loading="lazy" />}
+              <span class="who">
+                {data.url ? <a class="name" href={data.url}>{`${data.name}\u00a0↗`}</a> : <span class="name">{data.name}</span>}
+                <span class="jc-mono role">
+                  {data.role}
+                  {data.community && ` · ${data.community}`}
+                </span>
               </span>
             </li>
           ))
@@ -82,15 +85,32 @@ const organizers = (await getCollection('organizers')).sort((a, b) => a.data.ord
     list-style: none;
   }
   .organizers li {
-    display: grid;
-    gap: 4px;
-    padding: 18px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 16px;
     border: 1px solid var(--jc-line);
     border-radius: 10px;
+  }
+  .face {
+    flex: none;
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+  }
+  .who {
+    display: grid;
+    gap: 4px;
+    min-width: 0;
   }
   .name {
     font-size: 18px;
     font-weight: 700;
+    color: var(--jc-text);
+    text-decoration: none;
+  }
+  a.name:hover {
+    color: var(--jc-accent);
   }
   .role {
     font-size: 13px;

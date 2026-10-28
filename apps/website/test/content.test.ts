@@ -1,4 +1,4 @@
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { z } from 'astro/zod';
 import { parse } from 'yaml';
 import { describe, expect, it } from 'vitest';
@@ -10,13 +10,28 @@ const frontmatter = (md: string) => parse(md.match(/^---\n([\s\S]*?)\n---/)![1])
 
 describe('site content', () => {
   it('lists the four organizers from /members, in order', () => {
-    const organizers = z.array(organizerSchema).parse(JSON.parse(read('organizers.json')));
+    const organizers = z.array(organizerSchema({ image: () => z.string() })).parse(JSON.parse(read('organizers.json')));
     expect(organizers.map((o) => [o.name, o.role])).toEqual([
       ['Cyrus Hiyas', 'Lead'],
       ['Dorell James', 'Lead'],
       ['Harlequin Doyon', 'Lead'],
       ['Sieg Balona', 'Co-Lead'],
     ]);
+  });
+
+  it('links each organizer to their own site', () => {
+    const organizers = z.array(organizerSchema({ image: () => z.string() })).parse(JSON.parse(read('organizers.json')));
+    expect(Object.fromEntries(organizers.map((o) => [o.name, o.url]))).toEqual({
+      'Cyrus Hiyas': 'https://www.sleepnotfound.com/',
+      'Dorell James': 'https://www.dorelljames.com',
+      'Harlequin Doyon': 'https://harlekoy.dev/',
+      'Sieg Balona': 'https://siegb.dev/',
+    });
+  });
+
+  it('gives each organizer a photo that exists in the repo', () => {
+    const organizers = z.array(organizerSchema({ image: () => z.string() })).parse(JSON.parse(read('organizers.json')));
+    for (const o of organizers) expect(existsSync(new URL(o.photo!, new URL('organizers.json', content))), o.name).toBe(true);
   });
 
   it('lists the official channels from /official-links', () => {

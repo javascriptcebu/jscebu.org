@@ -14,13 +14,18 @@ export const projectSchema = ({ image }: Pick<SchemaContext, 'image'>) =>
     order: z.number(),
   });
 
-export const organizerSchema = z.object({
-  id: z.string(),
-  name: z.string(),
-  role: z.string(),
-  community: z.string().optional(),
-  order: z.number(),
-});
+export const organizerSchema = ({ image }: Pick<SchemaContext, 'image'>) =>
+  z.object({
+    id: z.string(),
+    name: z.string(),
+    role: z.string(),
+    community: z.string().optional(),
+    /** Their own site. */
+    url: z.string().url().optional(),
+    /** A real photo (or the avatar they publish), square, relative to organizers.json. */
+    photo: image().optional(),
+    order: z.number(),
+  });
 
 export const linkSchema = z.object({
   id: z.string(),
