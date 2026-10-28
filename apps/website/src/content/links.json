@@ -1,0 +1,6 @@
+[
+  { "id": "facebook", "label": "Facebook", "url": "https://www.facebook.com/JavaScriptCebu/", "handle": "JavaScriptCebu", "order": 1 },
+  { "id": "x", "label": "X (Twitter)", "url": "https://twitter.com/javascriptcebu", "handle": "@JavaScriptCebu", "order": 2 },
+  { "id": "github", "label": "GitHub", "url": "https://github.com/javascriptcebu/", "handle": "javascriptcebu", "order": 3 },
+  { "id": "email", "label": "Email", "url": "mailto:hello@jscebu.org", "handle": "hello@jscebu.org", "order": 4 }
+]
