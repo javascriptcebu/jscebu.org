@@ -12,5 +12,8 @@
   },
   // www.jscebu.org is attached as a Workers Custom Domain (Cloudflare manages its DNS
   // record and certificate). The apex jscebu.org still redirects to www via Vercel.
-  "routes": [{ "pattern": "www.jscebu.org", "custom_domain": true }]
+  "routes": [{ "pattern": "www.jscebu.org", "custom_domain": true }],
+  // Required by `wrangler preview`, which Workers Builds runs for non-production branches.
+  // Empty: previews reuse the top-level assets and compatibility settings, and get no routes.
+  "previews": {}
 }
