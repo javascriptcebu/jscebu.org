@@ -1,0 +1,149 @@
+---
+import SiteFooter from '../components/SiteFooter.astro';
+import SiteNav from '../components/SiteNav.astro';
+import Terminal from './Terminal.astro';
+
+interface Props {
+  title: string;
+  description: string;
+  current?: 'home' | 'projects' | 'about' | 'links' | 'brand';
+  index?: boolean;
+}
+
+const { title, description, current, index } = Astro.props;
+---
+
+<Terminal {title} {description} {index}>
+  <SiteNav {current}><slot name="subnav" /></SiteNav>
+  <main>
+    <slot />
+  </main>
+  <SiteFooter />
+</Terminal>
+
+<script>
+  // Sections marked data-reveal fade up as they scroll in. Content stays visible without JS
+  // or under reduced motion, because only this script adds the .motion class that hides it.
+  const targets = document.querySelectorAll('[data-reveal]');
+  if (targets.length && 'IntersectionObserver' in window && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    document.documentElement.classList.add('motion');
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (!entry.isIntersecting) continue;
+          entry.target.classList.add('is-in');
+          io.unobserve(entry.target);
+        }
+      },
+      { rootMargin: '0px 0px -10% 0px', threshold: 0.1 },
+    );
+    targets.forEach((el) => io.observe(el));
+  }
+</script>
+
+<style is:global>
+  :root {
+    --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+    --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+  }
+
+  /* Motion: a little, and only for people who haven't asked for less (see .impeccable.md). */
+  @media (prefers-reduced-motion: no-preference) {
+    /* Headline words arrive like terminal output; the cursor is already waiting at the end. */
+    .rise {
+      display: inline-block;
+      animation: rise 700ms var(--ease-out-expo) calc(120ms + var(--i, 0) * 70ms) backwards;
+    }
+    .page-head > :not(h1) {
+      animation: fade-up 600ms var(--ease-out-expo) 380ms backwards;
+    }
+    .page-head > .jc-label {
+      animation-delay: 0ms;
+    }
+    .btn {
+      transition:
+        transform 150ms var(--ease-out-quart),
+        border-color 200ms;
+    }
+    .btn:active {
+      transform: scale(0.97);
+    }
+    .lift {
+      transition:
+        transform 250ms var(--ease-out-quart),
+        border-color 200ms;
+    }
+  }
+  /* Screens only: printing or saving as PDF must show sections that were never scrolled to. */
+  @media screen and (prefers-reduced-motion: no-preference) {
+    .motion [data-reveal] {
+      opacity: 0;
+      transform: translateY(18px);
+      transition:
+        opacity 600ms var(--ease-out-quart),
+        transform 700ms var(--ease-out-expo);
+      transition-delay: calc(var(--i, 0) * 80ms);
+    }
+    .motion [data-reveal].is-in {
+      opacity: 1;
+      transform: none;
+    }
+  }
+  @media (prefers-reduced-motion: no-preference) and (hover: hover) {
+    .btn:hover {
+      transform: translateY(-1px);
+    }
+    .lift:hover {
+      transform: translateY(-3px);
+      border-color: var(--jc-accent);
+    }
+  }
+  @keyframes rise {
+    from {
+      opacity: 0;
+      transform: translateY(0.4em);
+    }
+  }
+  @keyframes fade-up {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+  }
+
+  main {
+    min-height: calc(100vh - 280px);
+  }
+  .wrap {
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 1120px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+  @media (max-width: 420px) {
+    .wrap {
+      padding: 0 16px;
+    }
+  }
+  .page-head {
+    padding: 72px 0 40px;
+  }
+  .page-head .jc-label {
+    margin: 0;
+    font-size: 13px;
+    color: var(--jc-accent);
+  }
+  .page-head h1 {
+    margin: 14px 0 0;
+    font-size: clamp(40px, 8vw, 72px);
+    line-height: 1;
+    letter-spacing: -0.02em;
+    color: var(--jc-accent);
+  }
+  .page-head p {
+    max-width: 56ch;
+    margin: 18px 0 0;
+    font-size: 18px;
+  }
+</style>

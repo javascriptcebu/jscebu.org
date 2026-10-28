@@ -1,0 +1,76 @@
+---
+import { render, type CollectionEntry } from 'astro:content';
+
+interface Props {
+  entry: CollectionEntry<'projects'>;
+  /** Show the longer description from the Markdown body, not just the summary. */
+  full?: boolean;
+}
+
+const { entry, full = false } = Astro.props;
+const { name, url, repo, summary, image, status } = entry.data;
+const { Content } = await render(entry);
+const host = new URL(url).hostname.replace(/^www\./, '');
+---
+
+<article class="project">
+  <img class="icon" src={image.src} width={image.width} height={image.height} alt="" />
+  <div class="body">
+    <div class="head">
+      <h3>{name}</h3>
+      {status === 'archived' && <span class="jc-mono badge">archived</span>}
+    </div>
+    <p class="summary">{summary}</p>
+    {full && <div class="more"><Content /></div>}
+    <p class="jc-mono actions">
+      <a href={url}>{host} ↗</a>
+      {repo && <a href={repo}>source ↗</a>}
+    </p>
+  </div>
+</article>
+
+<style>
+  .project {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 20px;
+    padding: 24px;
+    border: 1px solid var(--jc-line);
+    border-radius: 12px;
+    background: color-mix(in srgb, var(--jc-text) 3%, var(--jc-ink));
+  }
+  .icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 14px;
+  }
+  .head {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+  }
+  h3 {
+    margin: 0;
+    font-size: 24px;
+  }
+  .badge {
+    font-size: 11px;
+    color: var(--jc-muted);
+  }
+  .summary {
+    margin: 6px 0 0;
+  }
+  .more {
+    color: var(--jc-muted);
+  }
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 20px;
+    margin: 14px 0 0;
+    font-size: 14px;
+  }
+  .actions a {
+    text-decoration: none;
+  }
+</style>

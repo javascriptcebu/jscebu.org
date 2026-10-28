@@ -73,6 +73,15 @@ describe('brandMd', () => {
   });
 });
 
+describe('links to the /brand page', () => {
+  it('use the trailing slash the site serves it at, so agents skip a redirect', () => {
+    for (const text of [brandMd(brand), llmsTxt(brand)]) {
+      expect(text).toContain('https://www.jscebu.org/brand/');
+      expect(text).not.toMatch(/https:\/\/www\.jscebu\.org\/brand(?![/.])/);
+    }
+  });
+});
+
 describe('llmsTxt', () => {
   it('points agents to brand.md', () => {
     const txt = llmsTxt(brand);

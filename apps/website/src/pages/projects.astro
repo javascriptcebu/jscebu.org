@@ -1,0 +1,30 @@
+---
+import { getCollection } from 'astro:content';
+import Cursor from '../components/Cursor.astro';
+import ProjectCard from '../components/ProjectCard.astro';
+import Site from '../layouts/Site.astro';
+
+const projects = (await getCollection('projects')).sort((a, b) => a.data.order - b.data.order);
+---
+
+<Site title="Projects · JS Cebu" description="Things the JavaScript Cebu community builds and runs." current="projects">
+  <div class="wrap">
+    <header class="page-head">
+      <p class="jc-label">// projects</p>
+      <h1 class="jc-headline"><Cursor text="Community projects" blink animate /></h1>
+      <p>Things the JS Cebu community builds and runs, in the open.</p>
+    </header>
+    <div class="grid">
+      {projects.map((entry, i) => <div data-reveal style={`--i: ${i}`}><ProjectCard entry={entry} full /></div>)}
+    </div>
+  </div>
+</Site>
+
+<style>
+  .grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 16px;
+    max-width: 760px;
+  }
+</style>

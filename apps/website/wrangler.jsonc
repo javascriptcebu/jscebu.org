@@ -9,7 +9,8 @@
     "directory": "./dist",
     "binding": "ASSETS",
     "not_found_handling": "404-page"
-  }
-  // No routes yet. The www.jscebu.org routes are added at cutover (plan Task 8),
-  // so every other path keeps going to the existing site.
+  },
+  // www.jscebu.org is attached as a Workers Custom Domain (Cloudflare manages its DNS
+  // record and certificate). The apex jscebu.org still redirects to www via Vercel.
+  "routes": [{ "pattern": "www.jscebu.org", "custom_domain": true }]
 }

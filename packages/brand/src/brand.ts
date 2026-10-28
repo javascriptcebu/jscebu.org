@@ -199,7 +199,7 @@ ${fontLink('interTight', 'jetbrainsMono')}
     <img class="jc-photo" src="https://www.jscebu.org/brand/photos/community-meetup.jpg" alt="The JS Cebu community at a meetup" style="width: 100%; aspect-ratio: 4 / 3;">
     <figcaption class="jc-label" style="margin-top: 8px; font-size: 11px;">The November meetup · Photo: JS Cebu</figcaption>
   </figure>
-  <p style="margin: 24px 0 0; font-size: 18px; line-height: 1.6;">Notes from the November meetup: what worked, what broke, and what we'd do again. Padayon!</p>
+  <p style="margin: 24px 0 0; font-size: 18px; line-height: 1.6;">Notes from the November meetup: what worked, what broke, and what we'd do again.</p>
 </article>`,
     },
   ],

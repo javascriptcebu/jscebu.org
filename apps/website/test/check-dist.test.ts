@@ -26,8 +26,12 @@ describe('findMissingLinks', () => {
     expect(findMissingLinks('See https://www.jscebu.org/brand/logo/missing.svg.', exists)).toEqual(['/brand/logo/missing.svg']);
   });
 
-  it('ignores pages the legacy site still serves and other origins', () => {
-    expect(findMissingLinks('<a href="/events">x</a><a href="https://fonts.googleapis.com/x">y</a>', () => false)).toEqual([]);
+  it('checks every path on this site, so a link to a redirect source counts as missing', () => {
+    expect(findMissingLinks('<a href="/events">x</a><a href="/about/#organizers">y</a>', (p) => p === '/about/')).toEqual(['/events']);
+  });
+
+  it('ignores other origins, mailto links and in-page anchors', () => {
+    expect(findMissingLinks('<a href="https://fonts.googleapis.com/x">y</a><a href="mailto:hello@jscebu.org">m</a><a href="#join">j</a>', () => false)).toEqual([]);
   });
 });
 

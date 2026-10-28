@@ -34,3 +34,17 @@ describe('personality examples', () => {
     expect(p.exampleHtml).toContain(`class="jc-${p.id}`);
   });
 });
+
+describe('Bisaya copy', () => {
+  // Spec §11: Dorell approves all Bisaya copy before it appears anywhere. Agents copy these verbatim.
+  const drafts = brand.voice.phrases.filter((p) => p.status === 'draft').map((p) => p.bisaya);
+  const pieces: [string, string][] = [
+    ...brand.personalities.map((p) => [`${p.id} example`, p.exampleHtml] as [string, string]),
+    ['event-post template', read('templates/event-post.html')],
+    ['fb-cover template', read('templates/fb-cover.html')],
+  ];
+
+  it.each(pieces)('keeps draft phrases out of the %s', (_, html) => {
+    for (const phrase of drafts) expect(html.toLowerCase(), phrase).not.toContain(phrase.toLowerCase());
+  });
+});

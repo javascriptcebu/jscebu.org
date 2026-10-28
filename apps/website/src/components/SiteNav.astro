@@ -1,0 +1,91 @@
+---
+import { brand } from '@jscebu/brand';
+
+interface Props {
+  current?: 'home' | 'projects' | 'about' | 'links' | 'brand';
+}
+
+const { current } = Astro.props;
+const items = [
+  { href: '/projects/', label: 'Projects', key: 'projects' },
+  { href: '/about/', label: 'About', key: 'about' },
+  { href: '/brand/', label: 'Brand', key: 'brand' },
+] as const;
+const lockup = brand.assets.find((a) => a.id === 'lockup-dark')!.path;
+const mark = brand.assets.find((a) => a.id === 'mark-color')!.path;
+---
+
+<nav class="site-nav" aria-label="Main">
+  <div class="wrap bar">
+    <a href="/" class="home" aria-current={current === 'home' ? 'page' : undefined}>
+      <!-- The lockup has a 120px minimum width; narrower screens get the mark alone. -->
+      <img class="lockup" src={lockup} alt="JavaScript Cebu" width="5045" height="1284" />
+      <img class="mark" src={mark} alt="JavaScript Cebu" width="1005" height="1006" />
+    </a>
+    <ul class="links jc-mono">
+      {
+        items.map((i) => (
+          <li>
+            <a href={i.href} aria-current={current === i.key ? 'page' : undefined}>
+              {i.label}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+  <slot />
+</nav>
+
+<style>
+  .site-nav {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    border-bottom: 1px solid var(--jc-line);
+    background: color-mix(in srgb, var(--jc-ink) 92%, transparent);
+    backdrop-filter: blur(8px);
+  }
+  .bar {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    height: 60px;
+  }
+  .home img {
+    display: block;
+    height: auto;
+  }
+  .home .lockup {
+    display: none;
+    width: 128px;
+  }
+  .home .mark {
+    width: 32px;
+  }
+  @media (min-width: 480px) {
+    .home .lockup {
+      display: block;
+    }
+    .home .mark {
+      display: none;
+    }
+  }
+  .links {
+    display: flex;
+    gap: 18px;
+    margin: 0 0 0 auto;
+    padding: 0;
+    list-style: none;
+    font-size: 13px;
+  }
+  .links a {
+    color: var(--jc-muted);
+    text-decoration: none;
+    transition: color 150ms;
+  }
+  .links a:hover,
+  .links a[aria-current='page'] {
+    color: var(--jc-accent);
+  }
+</style>
