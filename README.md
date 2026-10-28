@@ -31,4 +31,6 @@ pnpm build                      # builds the site and runs the post-build checks
 pnpm --filter website dev       # local preview
 ```
 
+Working on this repo with an AI agent? Start with [AGENTS.md](AGENTS.md). To report a security issue, see [SECURITY.md](SECURITY.md).
+
 Code is MIT-licensed ([LICENSE](LICENSE)). The JS Cebu name and logos are not; see [packages/brand/LICENSE](packages/brand/LICENSE).
