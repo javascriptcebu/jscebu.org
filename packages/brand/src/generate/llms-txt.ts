@@ -9,7 +9,7 @@ export function llmsTxt(b: Brand): string {
 ## Brand
 
 - [Brand rules for agents](${b.site}/brand.md): the MUST checklist, exact tokens, a recipe per personality, voice and asset URLs. Read this before making anything for ${b.name}.
-- [Brand guidelines](${b.site}/brand): the same rules for people, with logo downloads.
+- [Brand guidelines](${b.site}/brand/): the same rules for people, with logo downloads.
 - [tokens.css](${b.site}/brand/tokens.css): CSS custom properties and the cursor, sticker and highlighter classes.
 `;
 }

@@ -29,7 +29,7 @@ export function brandMd(b: Brand): string {
 
   sections.push(`# ${b.name} brand · v${b.version}
 
-> Rules for anyone, person or AI agent, making something for ${b.name}: event graphics, slides, pages, recaps. Follow the MUST checklist exactly and check your work against it before sharing. The same rules, with pictures, are at ${url('/brand')}.
+> Rules for anyone, person or AI agent, making something for ${b.name}: event graphics, slides, pages, recaps. Follow the MUST checklist exactly and check your work against it before sharing. The same rules, with pictures, are at ${url('/brand/')}.
 
 Start here:
 

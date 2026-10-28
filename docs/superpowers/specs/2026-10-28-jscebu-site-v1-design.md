@@ -74,19 +74,19 @@ All pages use the **Terminal** personality and share one nav and footer.
 
 ## 5. Old URLs
 
-Redirects ship as a `_redirects` file served by Workers static assets. **[Builder]** Confirm the file format against the current Cloudflare docs.
+Redirects ship as a `_redirects` file served by Workers static assets. Targets end in `/` because Workers serves `about/index.html` at `/about/` and 307s `/about` to it; a slash-less target would redirect twice. **[Builder]** Confirm the file format against the current Cloudflare docs.
 
 | Old URL (today) | v1 | Status |
 |---|---|---|
-| `/mission-vision` | `/about` | 301 |
-| `/members` | `/about#organizers` | 301 |
-| `/iniatives` (sic), `/initiatives` | `/about` | 301 |
-| `/official-links` | `/links` | 301 |
-| `/community-projects` (a 2023 Hacktoberfest repo list) | `/projects` | 301 |
+| `/mission-vision` | `/about/` | 301 |
+| `/members` | `/about/#organizers` | 301 |
+| `/iniatives` (sic), `/initiatives` | `/about/` | 301 |
+| `/official-links` | `/links/` | 301 |
+| `/community-projects` (a 2023 Hacktoberfest repo list) | `/projects/` | 301 |
 | `/events` | `/#events` | **302**, because `/events` becomes a real page later |
-| `/promotional-materials` (Notion "page not found" today) | `/brand` | 301 |
+| `/promotional-materials` (Notion "page not found" today) | `/brand/` | 301 |
 | `/annual-hacktoberfest` (Notion "page not found" today) | `https://hacktoberfest.jscebu.org` | 301 |
-| `/volunteers-training-workshop` (Notion "page not found" today) | `/about` | 301 |
+| `/volunteers-training-workshop` (Notion "page not found" today) | `/about/` | 301 |
 | `/feed` (500 today) | 404 | None. v1 has no feed. |
 | `/sitemap.xml` (500 today) | the new sitemap | |
 | anything else | the branded 404 page | |

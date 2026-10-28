@@ -7,8 +7,8 @@ interface Props {
 
 const { current } = Astro.props;
 const items = [
-  { href: '/projects', label: 'Projects', key: 'projects' },
-  { href: '/about', label: 'About', key: 'about' },
+  { href: '/projects/', label: 'Projects', key: 'projects' },
+  { href: '/about/', label: 'About', key: 'about' },
   { href: '/brand/', label: 'Brand', key: 'brand' },
 ] as const;
 const lockup = brand.assets.find((a) => a.id === 'lockup-dark')!.path;

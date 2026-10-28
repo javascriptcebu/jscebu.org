@@ -1,7 +1,8 @@
 /**
  * Post-build checks over dist/ and src/. Run after `astro build`; exits 1 with a list on any failure.
  * - The cursor never wraps alone (and HTML compression didn't eat the space before its word).
- * - Every /brand link on the page and in brand.md resolves to a built file.
+ * - Every link to this site, on every page and in brand.md and llms.txt, resolves to a built file.
+ * - Every redirect in _redirects that points at this site lands on a built file.
  * - Every rule appears on both the page and brand.md ("one source, two readers").
  * - No color or font-family literals in src/: everything comes from --jc-* variables.
  */
@@ -12,8 +13,6 @@ import { brand, lintHtml, type Brand } from '@jscebu/brand';
 import { parseHTML } from 'linkedom';
 
 const SITE = 'https://www.jscebu.org';
-/** Paths this app serves; everything else still belongs to the legacy site. */
-const OURS = /^\/(?:brand(?:[/.]|$)|llms\.txt$|_astro\/)/;
 
 export function findCursorViolations(html: string): string[] {
   const out = lintHtml(html)
@@ -38,8 +37,7 @@ export function findMissingLinks(text: string, fileExists: (path: string) => boo
   const paths = urls
     .map((u) => (u.startsWith(SITE) ? u.slice(SITE.length) || '/' : u))
     .filter((u) => u.startsWith('/') && !u.startsWith('//'))
-    .map((u) => u.replace(/[?#].*$/, ''))
-    .filter((p) => OURS.test(p));
+    .map((u) => u.replace(/[?#].*$/, ''));
   return [...new Set(paths)].filter((p) => !fileExists(p));
 }
 
@@ -81,6 +79,18 @@ export function parityRules(b: Brand): string[] {
   ];
 }
 
+/** Parse a Cloudflare `_redirects` file: `source destination [status]`, status defaulting to 302. */
+export function parseRedirects(text: string): { from: string; to: string; status: number }[] {
+  return text
+    .split('\n')
+    .map((line) => line.trim())
+    .filter((line) => line && !line.startsWith('#'))
+    .map((line) => {
+      const [from, to, status] = line.split(/\s+/);
+      return { from, to, status: status ? Number(status) : 302 };
+    });
+}
+
 function walk(dir: string): string[] {
   return readdirSync(dir).flatMap((name) => {
     const p = join(dir, name);
@@ -92,23 +102,39 @@ function main(): void {
   const app = fileURLToPath(new URL('..', import.meta.url));
   const dist = join(app, 'dist');
   const read = (p: string) => readFileSync(join(dist, p), 'utf8');
+  /** A URL path is built when it names a file, or ends in / over a folder with index.html. A bare folder path would cost a redirect. */
   const exists = (urlPath: string) => {
     const p = join(dist, decodeURIComponent(urlPath));
-    return urlPath.endsWith('/') ? existsSync(join(p, 'index.html')) : existsSync(p) || existsSync(join(p, 'index.html'));
+    if (urlPath.endsWith('/')) return existsSync(join(p, 'index.html'));
+    return existsSync(p) && statSync(p).isFile();
   };
 
-  const required = ['brand/index.html', 'brand.md', 'brand/tokens.css', 'llms.txt', '404.html', 'brand/logo/sticker.svg', 'brand/templates/event-post.html'];
-  const html = read('brand/index.html');
+  const required = [
+    'index.html', 'projects/index.html', 'about/index.html', 'links/index.html', '404.html',
+    'brand/index.html', 'brand.md', 'brand/tokens.css', 'llms.txt', 'sitemap.xml', 'robots.txt', '_redirects',
+    'brand/logo/sticker.svg', 'brand/templates/event-post.html',
+  ];
+  const pages = walk(dist).filter((p) => p.endsWith('.html') && !p.startsWith(join(dist, 'brand', 'templates'))).map((p) => relative(dist, p));
+  const brandHtml = read('brand/index.html');
   const md = read('brand.md');
-  const { document } = parseHTML(html);
+  const redirects = existsSync(join(dist, '_redirects')) ? parseRedirects(read('_redirects')) : [];
   const src = walk(join(app, 'src')).map((p) => ({ path: relative(app, p), text: readFileSync(p, 'utf8') }));
 
   const errors = [
     ...required.filter((f) => !existsSync(join(dist, f))).map((f) => `dist/${f} was not built`),
-    ...findCursorViolations(html).map((m) => `/brand cursor: ${m}`),
-    ...findMissingLinks(html, exists).map((p) => `/brand links to ${p}, which was not built`),
+    ...pages.flatMap((page) => {
+      const html = read(page);
+      return [
+        ...findCursorViolations(html).map((m) => `${page} cursor: ${m}`),
+        ...findMissingLinks(html, exists).map((p) => `${page} links to ${p}, which was not built`),
+      ];
+    }),
     ...findMissingLinks(md, exists).map((p) => `brand.md links to ${p}, which was not built`),
-    ...findParityGaps(document.body.textContent ?? '', md, parityRules(brand)),
+    ...findMissingLinks(read('llms.txt'), exists).map((p) => `llms.txt links to ${p}, which was not built`),
+    ...redirects
+      .filter((r) => r.to.startsWith('/') && !exists(r.to.replace(/#.*$/, '')))
+      .map((r) => `_redirects sends ${r.from} to ${r.to}, which was not built`),
+    ...findParityGaps(parseHTML(brandHtml).document.body.textContent ?? '', md, parityRules(brand)),
     ...findLiterals(src),
   ];
 
@@ -116,7 +142,9 @@ function main(): void {
     console.error(`check-dist: ${errors.length} problem(s)\n${errors.map((e) => `  - ${e}`).join('\n')}`);
     process.exit(1);
   }
-  console.log(`check-dist: ok (${required.length} files, cursor, links, parity, ${src.length} source files free of literals)`);
+  console.log(
+    `check-dist: ok (${required.length} files, ${pages.length} pages: cursor and links; ${redirects.length} redirects; /brand parity; ${src.length} source files free of literals)`,
+  );
 }
 
 if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) main();

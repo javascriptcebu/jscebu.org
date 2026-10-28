@@ -7,12 +7,13 @@ interface Props {
   title: string;
   description: string;
   current?: 'home' | 'projects' | 'about' | 'links' | 'brand';
+  index?: boolean;
 }
 
-const { title, description, current } = Astro.props;
+const { title, description, current, index } = Astro.props;
 ---
 
-<Terminal {title} {description}>
+<Terminal {title} {description} {index}>
   <SiteNav {current}><slot name="subnav" /></SiteNav>
   <main>
     <slot />
