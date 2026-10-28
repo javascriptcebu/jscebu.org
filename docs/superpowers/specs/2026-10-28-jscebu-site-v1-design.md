@@ -29,7 +29,6 @@ Move www.jscebu.org off Notion and onto the new Astro site now, with what exists
 - A Hacktoberfest page (it has its own site).
 - Event recaps, RSS, a blog.
 - Moving the apex domain off Vercel.
-- Auto-deploy from git.
 
 **Anti-goals**
 - An old link that now 404s without a reason.
@@ -140,8 +139,9 @@ Recorded so v1 doesn't paint it into a corner. This gets built in its own releas
 - Retiring Vercel is a follow-up.
 
 **Deploys**
-- By hand with `wrangler deploy` for v1.
-- **[Proposed]** Connecting Workers Builds for auto-deploy from `main` is a follow-up.
+- **[Decided, 2026-10-28]** Merging to `main` deploys, through Cloudflare Workers Builds connected to the GitHub repo. The commands are in `CONTRIBUTING.md`.
+- The flow is intent → plan → approval → implementation → review → merge.
+- **What actually happened at launch:** Dorell attached `www.jscebu.org` as a Custom Domain in the dashboard after reviewing the preview. `wrangler.jsonc` records it.
 
 **Branches**
 - This work is on `feat/site-v1`, stacked on the design-system PR (#1).
