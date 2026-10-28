@@ -140,7 +140,7 @@ const sample = 'Aa Bb Cc 0123456789';
               <div class="demo">
                 {s.id === 'cursor' && <code class="snippet">{'<span class="jc-nw">word<span class="jc-cursor" aria-hidden="true"></span></span>'}</code>}
                 {s.id === 'sticker' && <img class="demo-sticker" src={asset('sticker-tilted').path} alt="The JS Cebu sticker, tilted" />}
-                {s.id === 'bisaya' && <p class="jc-mono phrases">{brand.voice.phrases.map((p) => p.bisaya).join(' · ')}</p>}
+                {s.id === 'bisaya' && <p class="jc-mono phrases">{brand.voice.phrases.map((p) => p.bisaya).join(' · ')}{brand.voice.phrases.some((p) => p.status === 'draft') && <span class="draft-note">drafts, not yet approved</span>}</p>}
                 {s.id === 'photos' && <img class="jc-photo demo-photo" src={asset('photo').path} alt="The JS Cebu community at a meetup" />}
               </div>
               <RuleList items={s.rules} />
@@ -591,6 +591,12 @@ const sample = 'Aa Bb Cc 0123456789';
     margin: 0;
     color: var(--jc-accent);
     text-align: center;
+  }
+  .draft-note {
+    display: block;
+    margin-top: 8px;
+    font-size: 11px;
+    color: var(--jc-muted);
   }
   .demo-photo {
     width: 100%;

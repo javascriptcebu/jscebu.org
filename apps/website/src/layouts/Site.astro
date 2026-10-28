@@ -60,18 +60,6 @@ const { title, description, current, index } = Astro.props;
     .page-head > .jc-label {
       animation-delay: 0ms;
     }
-    .motion [data-reveal] {
-      opacity: 0;
-      transform: translateY(18px);
-      transition:
-        opacity 600ms var(--ease-out-quart),
-        transform 700ms var(--ease-out-expo);
-      transition-delay: calc(var(--i, 0) * 80ms);
-    }
-    .motion [data-reveal].is-in {
-      opacity: 1;
-      transform: none;
-    }
     .btn {
       transition:
         transform 150ms var(--ease-out-quart),
@@ -84,6 +72,21 @@ const { title, description, current, index } = Astro.props;
       transition:
         transform 250ms var(--ease-out-quart),
         border-color 200ms;
+    }
+  }
+  /* Screens only: printing or saving as PDF must show sections that were never scrolled to. */
+  @media screen and (prefers-reduced-motion: no-preference) {
+    .motion [data-reveal] {
+      opacity: 0;
+      transform: translateY(18px);
+      transition:
+        opacity 600ms var(--ease-out-quart),
+        transform 700ms var(--ease-out-expo);
+      transition-delay: calc(var(--i, 0) * 80ms);
+    }
+    .motion [data-reveal].is-in {
+      opacity: 1;
+      transform: none;
     }
   }
   @media (prefers-reduced-motion: no-preference) and (hover: hover) {
