@@ -1,0 +1,15 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "jscebu-org",
+  "main": "worker/index.ts",
+  "compatibility_date": "2026-10-28",
+  "workers_dev": true,
+  // Static assets are served first; the Worker only runs when no asset matches.
+  "assets": {
+    "directory": "./dist",
+    "binding": "ASSETS",
+    "not_found_handling": "404-page"
+  }
+  // No routes yet. The www.jscebu.org routes are added at cutover (plan Task 8),
+  // so every other path keeps going to the existing site.
+}
