@@ -68,6 +68,9 @@ export function findLiterals(srcFiles: { path: string; text: string }[]): string
   );
 }
 
+/** Files whose text is code or content; images and fonts are skipped by the literal check. */
+export const isSourceText = (path: string) => /\.(astro|ts|tsx|js|mjs|css|md|mdx|json)$/i.test(path);
+
 /** Every rule list that must read the same on the page and in brand.md. */
 export function parityRules(b: Brand): string[] {
   return [
@@ -118,7 +121,9 @@ function main(): void {
   const brandHtml = read('brand/index.html');
   const md = read('brand.md');
   const redirects = existsSync(join(dist, '_redirects')) ? parseRedirects(read('_redirects')) : [];
-  const src = walk(join(app, 'src')).map((p) => ({ path: relative(app, p), text: readFileSync(p, 'utf8') }));
+  const src = walk(join(app, 'src'))
+    .filter(isSourceText)
+    .map((p) => ({ path: relative(app, p), text: readFileSync(p, 'utf8') }));
 
   const errors = [
     ...required.filter((f) => !existsSync(join(dist, f))).map((f) => `dist/${f} was not built`),

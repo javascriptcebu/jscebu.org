@@ -1,6 +1,6 @@
 [
-  { "id": "cyrus-hiyas", "name": "Cyrus Hiyas", "role": "Lead", "community": "Angular Cebu", "order": 1 },
-  { "id": "dorell-james", "name": "Dorell James", "role": "Lead", "community": "React Cebu", "order": 2 },
-  { "id": "harlequin-doyon", "name": "Harlequin Doyon", "role": "Lead", "community": "Vue.js Cebu", "order": 3 },
-  { "id": "sieg-balona", "name": "Sieg Balona", "role": "Co-Lead", "community": "React Cebu", "order": 4 }
+  {"id": "cyrus-hiyas", "name": "Cyrus Hiyas", "role": "Lead", "community": "Angular Cebu", "url": "https://www.sleepnotfound.com/", "photo": "../assets/organizers/cyrus-hiyas.jpg", "order": 1},
+  {"id": "dorell-james", "name": "Dorell James", "role": "Lead", "community": "React Cebu", "url": "https://www.dorelljames.com", "photo": "../assets/organizers/dorell-james.jpg", "order": 2},
+  {"id": "harlequin-doyon", "name": "Harlequin Doyon", "role": "Lead", "community": "Vue.js Cebu", "url": "https://harlekoy.dev/", "photo": "../assets/organizers/harlequin-doyon.jpg", "order": 3},
+  {"id": "sieg-balona", "name": "Sieg Balona", "role": "Co-Lead", "community": "React Cebu", "url": "https://siegb.dev/", "photo": "../assets/organizers/sieg-balona.jpg", "order": 4}
 ]
