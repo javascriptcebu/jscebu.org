@@ -4,6 +4,11 @@
   "main": "worker/index.ts",
   "compatibility_date": "2026-10-28",
   "workers_dev": true,
+  // Wrangler builds the site before every deploy and preview, so CI needs no separate build step.
+  // `pnpm install` is a no-op when dependencies are already installed.
+  "build": {
+    "command": "pnpm install --frozen-lockfile && pnpm run build"
+  },
   // Static assets are served first; the Worker only runs when no asset matches.
   "assets": {
     "directory": "./dist",
@@ -12,5 +17,8 @@
   },
   // www.jscebu.org is attached as a Workers Custom Domain (Cloudflare manages its DNS
   // record and certificate). The apex jscebu.org still redirects to www via Vercel.
-  "routes": [{ "pattern": "www.jscebu.org", "custom_domain": true }]
+  "routes": [{ "pattern": "www.jscebu.org", "custom_domain": true }],
+  // Required by `wrangler preview`, which Workers Builds runs for non-production branches.
+  // Empty: previews reuse the top-level assets and compatibility settings, and get no routes.
+  "previews": {}
 }
