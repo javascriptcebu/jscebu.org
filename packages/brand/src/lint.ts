@@ -1,11 +1,9 @@
 import { parseHTML } from 'linkedom';
+import { findColorLiteral } from './color-literals.ts';
 
 export type LintRule = 'noColorLiterals' | 'cursorAttached' | 'photosUnfiltered' | 'logoOnYellow' | 'usesTokens';
 export interface LintIssue { rule: LintRule; message: string }
 
-// Only declaration values are scanned, so `#bad` as a selector is fine; `url(#add)` is a reference, not a color.
-const HEX = /(?<!url\(\s*['"]?)#(?:[0-9a-f]{8}|[0-9a-f]{6}|[0-9a-f]{3,4})(?![\w-])/i;
-const COLOR_FN = /\b(?:rgba?|hsla?|hwb|lab|lch|oklab|oklch)\(/i;
 const FILTER = /(?:^|[;{\s])filter\s*:(?!\s*none\b)\s*[^;}]+/i;
 const FULL_COLOR_LOGO = /(?:^|\/)(lockup-light|lockup-dark|mark-color)\.(?:svg|png)\b/;
 
@@ -32,15 +30,16 @@ export function lintHtml(html: string): LintIssue[] {
   const { document } = parseHTML(/<html[\s>]/i.test(html) ? html : `<!doctype html><html><body>${html}</body></html>`);
   const issues: LintIssue[] = [];
   const styles = [...document.querySelectorAll('style')].map((s) => s.textContent ?? '');
+  // Scan declaration values, preserving ID selectors and url(#id) references.
   const declarations = [
     ...styles.flatMap(cssRules).map((r) => r.body),
     ...[...document.querySelectorAll('[style]')].map((el) => el.getAttribute('style') ?? ''),
   ];
 
   for (const text of declarations) {
-    const hit = text.match(HEX) ?? text.match(COLOR_FN);
+    const hit = findColorLiteral(text);
     if (hit) {
-      issues.push({ rule: 'noColorLiterals', message: `Color literal "${hit[0]}". Use the --jc-* variables from tokens.css.` });
+      issues.push({ rule: 'noColorLiterals', message: `Color literal "${hit}". Use the --jc-* variables from tokens.css.` });
     }
   }
 

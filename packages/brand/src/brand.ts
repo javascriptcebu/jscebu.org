@@ -78,7 +78,7 @@ const tokensLink = '<link rel="stylesheet" href="https://www.jscebu.org/brand/to
 
 export const brand: Brand = {
   name: 'JavaScript Cebu',
-  version: '0.1.0',
+  version: '0.1.1',
   site: 'https://www.jscebu.org',
 
   colors: [
@@ -307,8 +307,8 @@ ${fontLink('interTight', 'jetbrainsMono')}
     ...logo('sticker', 'Sticker', 'Expressive placements: graphics, the hero, merch. Rotate it 6–10°.'),
     { id: 'sticker-tilted', label: 'Sticker, tilted -8° (PNG)', path: '/brand/logo/sticker-tilted.png', use: 'Drop straight into graphics.' },
     { id: 'tokens', label: 'tokens.css', path: '/brand/tokens.css', use: 'CSS custom properties and the cursor, sticker and highlighter classes. Link it from any HTML you make.' },
-    { id: 'event-post', label: 'Event post template (Poster, 1080×1080)', path: '/brand/templates/event-post.html', use: 'Copy it, change the text, render it to PNG.' },
-    { id: 'fb-cover', label: 'Facebook cover template', path: '/brand/templates/fb-cover.html', use: 'The post-event cover photo ritual.' },
+    { id: 'event-post', label: 'Event post template (Poster, 1080×1080)', path: '/brand/templates/event-post', use: 'Copy it, change the text, render it to PNG.' },
+    { id: 'fb-cover', label: 'Facebook cover template', path: '/brand/templates/fb-cover', use: 'The post-event cover photo ritual.' },
     { id: 'photo', label: 'Sample community photo', path: '/brand/photos/community-meetup.jpg', use: 'Placeholder in the templates. Replace it with a real photo from your event.' },
   ],
 
@@ -326,6 +326,13 @@ ${fontLink('interTight', 'jetbrainsMono')}
   ],
 
   changelog: [
+    {
+      version: '0.1.1',
+      date: '2026-10-30',
+      notes: [
+        'Publish canonical extensionless template URLs, and export the shared findColorLiteral checker helper without changing color policy.',
+      ],
+    },
     {
       version: '0.1.0',
       date: '2026-10-28',

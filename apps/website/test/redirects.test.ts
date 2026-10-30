@@ -14,7 +14,7 @@ describe('parseRedirects', () => {
 describe('public/_redirects', () => {
   it('sends every old jscebu.org URL where the v1 spec says (§5)', () => {
     const rules = parseRedirects(readFileSync(new URL('../public/_redirects', import.meta.url), 'utf8'));
-    expect(rules).toEqual([
+    const originals = [
       { from: '/mission-vision', to: '/about/', status: 301 },
       { from: '/members', to: '/about/#organizers', status: 301 },
       { from: '/iniatives', to: '/about/', status: 301 },
@@ -25,6 +25,7 @@ describe('public/_redirects', () => {
       { from: '/promotional-materials', to: '/brand/', status: 301 },
       { from: '/annual-hacktoberfest', to: 'https://hacktoberfest.jscebu.org/', status: 301 },
       { from: '/volunteers-training-workshop', to: '/about/', status: 301 },
-    ]);
+    ];
+    expect(rules).toEqual(originals.flatMap((r) => [r, { ...r, from: `${r.from}/` }]));
   });
 });
