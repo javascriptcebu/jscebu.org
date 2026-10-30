@@ -36,6 +36,7 @@
 |---|---|
 | Fallback | `apps/website/worker/index.ts`, new `apps/website/test/worker.test.ts` |
 | Brand URLs and release | `packages/brand/src/brand.ts`, `packages/brand/package.json`, `packages/brand/test/generate.test.ts`, lockfile metadata if required |
+| Brand page template behavior | `apps/website/src/pages/brand/index.astro`; built-page assertions in `apps/website/scripts/check-dist.ts` and `apps/website/test/check-dist.test.ts` |
 | Shared color detection | new `packages/brand/src/color-literals.ts`, `src/index.ts`, `src/lint.ts`, brand tests |
 | Built-output validation | `apps/website/scripts/check-dist.ts`, `apps/website/test/check-dist.test.ts` |
 | Redirects and HTTP checks | `apps/website/public/_redirects`, `test/redirects.test.ts`, `scripts/url-matrix.sh` |
@@ -63,6 +64,8 @@ Plan handoff completion is recorded in the single workpad as `Phase: plan, await
 - [ ] Change only the fallback request path; retain the entry point and asset-first configuration.
 - [ ] Add explicit brand-generation assertions for both extensionless template URLs and absence of their `.html` published URLs. Run before changing the metadata to observe failure.
 - [ ] Update the two brand asset paths; bump brand/package versions to `0.1.1` and add a changelog entry. Keep physical `.html` templates and source design values intact.
+- [ ] Add a built-page checker assertion and focused fixtures requiring both canonical template links in `/brand/`'s `#downloads` section to exist without a `download` attribute. Prove a fixture with `download=""` fails and a link without the attribute passes. Wire the assertion into `check-dist`'s `main()` so the real rendered page is checked by `pnpm build`. After changing the metadata, run the build before fixing the page and observe the existing `.html` suffix condition fail this check.
+- [ ] In `apps/website/src/pages/brand/index.astro`, replace the `a.path.endsWith('.html')` download decision with the stable `/brand/templates/` prefix (or equivalent explicit template identity). Template links must open their HTML; retain `download` for the other downloadable assets. Verify both canonical hrefs and absent `download` attributes in the rendered output, and confirm the cover iframe and its adjacent link use the canonical cover URL. Rerun focused checker tests and the build.
 - [ ] Add resolver tests for extensionless template success, missing template failure, direct assets, slash-ended page folders, rejection of bare folders and `.html` canonicalization hops.
 - [ ] Implement a pure/testable resolver in the website checker and use it wherever URLs are validated. Keep physical required-file checks distinct. Run focused brand and checker tests, then build.
 
@@ -104,8 +107,8 @@ Plan handoff completion is recorded in the single workpad as `Phase: plan, await
 
 - [ ] Inspect official release notes and `action.yml` for compatible checkout/setup-node/pnpm action versions using a runtime newer than Node 20. Recheck the discovery versions above; record the selected references and runtime evidence.
 - [ ] Update the three references and any documented migration requirements; preserve pnpm 11.3.0, project Node 24, frozen install, tests and build. Do not add deployment actions.
-- [ ] Add a structural JSONC config test expecting exactly the current www Custom Domain array. Assert no environment/preview-specific route array expands that surface. Use existing parser tooling if present, otherwise add a small explicit JSONC dev dependency.
-- [ ] Prove the guard fails for apex/wildcard/extra host, `custom_domain: false`, extra top-level routes and an environment/preview route. Mutate fixture data only, never real routes.
+- [ ] Add a structural JSONC config test expecting exactly the current www Custom Domain array and no top-level singular `route`. Reject the presence of either `route` or `routes` under every named `env` configuration and under `previews`, including empty values. Use existing parser tooling if present, otherwise add a small explicit JSONC dev dependency.
+- [ ] Prove the guard fails for apex/wildcard/extra host, `custom_domain: false`, extra top-level routes, a top-level singular `route`, and separate singular `route` and plural `routes` cases in both `env.<name>` and `previews`. Keep the current empty `previews` object passing. Mutate fixture data only, never real routes.
 - [ ] Add CODEOWNERS entries for the Wrangler file and CODEOWNERS itself using the explicit Q2 owner. State in the handoff that this does not change branch-protection settings.
 - [ ] Confirm `git diff -- apps/website/wrangler.jsonc` is empty and run focused configuration tests. CI's hosted execution is observed only after the host pushes; do not claim an unseen result.
 
@@ -113,6 +116,7 @@ Plan handoff completion is recorded in the single workpad as `Phase: plan, await
 
 - [ ] Run `pnpm install --frozen-lockfile`, `pnpm test`, and `pnpm build`. All must pass; record actual output and counts rather than assuming the old baseline.
 - [ ] Use supported local-only Workers asset serving to run the expanded URL matrix. Load applicable local tooling guidance if available; never deploy. Record statuses, redirects, charset/CORS, templates and missing-page 404 results. Unit-test the dormant fallback separately.
+- [ ] Separately start Astro dev (`pnpm --filter website dev`) and Astro preview (`pnpm --filter website exec astro preview`, after build), each on an available local port. Check `/brand/`, both extensionless template URLs and the cover iframe URL; record HTTP statuses and any redirects for each server, then stop both. Do not assume these servers implement Workers HTML asset resolution. If canonical URLs fail only in Astro, document the verified local-preview limitation in the handoff; the Workers URL matrix must still pass. Do not restore redirecting public `.html` URLs to mask a server difference.
 - [ ] Review `git diff origin/main`, untracked files and `git diff --check`. Confirm no generated outputs, secrets, unrelated changes or route edits.
 - [ ] Check every issue acceptance item below against evidence. Handle trusted lead feedback and every must-fix review item, or record reasoned pushback in its proper thread/workpad.
 - [ ] Rewrite host PR title/body around implemented behavior, remove `Plan: `, include `Closes #9` and real validation, and end with the Symphony/lead-review sentence. Write `.symphony/commit.txt` last among local handoff writes.
@@ -121,7 +125,7 @@ Plan handoff completion is recorded in the single workpad as `Phase: plan, await
 ## Acceptance criteria
 
 - [ ] Worker fallback requests `/404` and returns the intended 404 response under a direct handler test.
-- [ ] Brand metadata publishes both extensionless template URLs, served locally without a redirect; brand release version and changelog agree.
+- [ ] Brand metadata publishes both extensionless template URLs, served by local Workers assets without a redirect; brand release version and changelog agree. Both template links in `/brand/`'s downloads section have canonical hrefs and no `download` attribute, with built-output regression coverage; other download behavior is preserved. The cover iframe and adjacent link use the canonical cover URL.
 - [ ] All ten old URLs work in both source forms with the existing destinations and status codes.
 - [ ] `pnpm test` includes passing Astro and TypeScript checks, with no weakened content validation.
 - [ ] `/brand/tokens.css` is served locally as `text/css; charset=utf-8` with existing CORS.
@@ -129,7 +133,8 @@ Plan handoff completion is recorded in the single workpad as `Phase: plan, await
 - [ ] Brand lint and website checker share one color detector with preserved diagnostics and scan contexts.
 - [ ] `/links/`, home Join data and v1 spec match Q1's recorded decision.
 - [ ] All three CI actions use verified runtimes newer than Node 20; project commands remain on Node 24.
-- [ ] Config tests pin only the existing www Custom Domain, detect expanded route surfaces, and CODEOWNERS uses Q2's owner. Actual routes are unchanged.
+- [ ] Config tests pin only the existing www Custom Domain, reject top-level singular `route` and both `route`/`routes` overrides in named environments and previews, and CODEOWNERS uses Q2's owner. Actual routes are unchanged.
+- [ ] Astro dev and preview template/iframe HTTP behavior is checked separately and recorded; any limitation is distinguished from the required passing local Workers asset checks.
 - [ ] Frozen install, root tests/build, focused regressions, local HTTP checks and whole-branch review pass.
 
 ## Plan-phase validation
@@ -137,3 +142,9 @@ Plan handoff completion is recorded in the single workpad as `Phase: plan, await
 Required now: `pnpm test`, `pnpm build`, and review of the diff plus untracked files. Planning prose does not need tests that assert its wording. Record current results in the workpad; leave build acceptance boxes open until implementation. Production HTTP and hosted CI are not part of this plan-phase run.
 
 2026-10-30 plan-phase results: frozen install passed (already up to date); root tests passed (93 brand + 21 website = 114 tests in 11 files); root build and check-dist passed (14 required files, 6 pages, 10 redirects). The separate `tsc --noEmit` reproduction remains a five-error baseline failure to resolve after approval. Whole-branch and untracked-file review found only this plan and its spec; relative documentation links and whitespace checks pass. No application, dependency, CI, ownership or route files changed.
+
+## Review round 1 revisions
+
+2026-10-30: [Claude review on PR #16](https://github.com/javascriptcebu/jscebu.org/pull/16#issuecomment-6519831600) requested changes to this plan, without approving implementation. The must-fix is covered by the brand page file-map entry, Task 2's stable template identity and built-page `download` regression checks, and the template acceptance criterion. Both suggestions are incorporated: Task 9 records Astro dev/preview behavior separately from Workers, and Task 8 covers singular and plural route keys with failure fixtures. Q1 and Q2 remain pending; all build-phase checkboxes remain open.
+
+Rework validation: frozen install passed; `pnpm test` passed all 114 tests across 11 files; `pnpm build` passed, including check-dist (14 required files, 6 pages, 10 redirects). Source inspection confirmed the suffix-based download decision, and a direct expression probe with `/brand/templates/event-post` returned an empty download attribute. Reviewed the whole-branch diff against `origin/main`, untracked-file status and whitespace: only these two planning documents changed; Wrangler configuration is untouched. Dev/preview behavior and new regression tests remain build-phase work, not results claimed by this rework.
