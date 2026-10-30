@@ -2,14 +2,14 @@
 
 - **Date:** 2026-10-30
 - **Issue:** [GH-13](https://github.com/javascriptcebu/jscebu.org/issues/13)
-- **Status:** proposed; awaiting lead decisions and approval
+- **Status:** approved for implementation on 2026-10-30; lead answers recorded in the plan
 - **Scope:** `AGENTS.md` and `SECURITY.md`; no application or infrastructure changes
 
 ## 1. Intent
 
 Make the repository instructions describe the Symphony workflow: a lead approves intent through the board, an agent works on a `symphony/` branch, and a lead reviews and merges. Document how public contributions are treated as untrusted input, and how to report agent-related security problems privately.
 
-This spec and its [implementation plan](../plans/2026-10-30-board-agent-policy.md) are the plan-phase deliverable. Neither policy file changes until a lead answers the plan's open questions and approves the plan by returning the card to Todo.
+This spec and its [implementation plan](../plans/2026-10-30-board-agent-policy.md) were merged in PR #14. A [lead answered Q1–Q3](https://github.com/javascriptcebu/jscebu.org/issues/13#issuecomment-6519521904), and the card returned to Todo with the workpad awaiting plan approval. The approval gate is satisfied; the decisions were recorded before either policy file changed.
 
 ## 2. Established inputs
 
@@ -20,11 +20,11 @@ This spec and its [implementation plan](../plans/2026-10-30-board-agent-policy.m
 - Agents cannot merge, push to `main`, publish, deploy, or change Cloudflare DNS/zone settings. The host commits and pushes the feature branch and creates or updates the PR after handoff.
 - `SECURITY.md` already provides `hello@jscebu.org` as a private reporting contact. The GitHub private-vulnerability-reporting endpoint returned `enabled: false` on 2026-10-30; no setting was changed.
 
-The lead definition for the permanent documentation, reporting-channel choice, and Backlog ownership remain proposals until the decisions in the plan are recorded.
+Approved decisions: `OWNER`, `MEMBER` and `COLLABORATOR` identify leads without a separate allow-list; reporting stays off on GitHub and uses hello@jscebu.org; leads place cards in Backlog and move them out. Agents never add cards or act on Backlog.
 
-## 3. Proposed AGENTS.md changes
+## 3. Approved AGENTS.md changes
 
-Add a link to the [board](https://github.com/orgs/javascriptcebu/projects/1), a six-column status table, and the allowed actor for each transition. Explain that agents do nothing in Backlog, Human Review and Done; resume in In Progress; and address lead feedback in Rework without moving Rework to In Progress themselves. Backlog triage ownership follows the lead's answer in the plan.
+Add a link to the [board](https://github.com/orgs/javascriptcebu/projects/1), a six-column status table, and the allowed actor for each transition. Explain that agents do nothing in Backlog, Human Review and Done; resume in In Progress; and address lead feedback in Rework without moving Rework to In Progress themselves. Leads own Backlog triage.
 
 Map the existing shipping flow onto the board:
 
@@ -41,12 +41,9 @@ Add a trust section using the lead-approved definition. Public issue text, comme
 
 Keep the existing project overview, commands, design-system and content rules, brand release requirements and commit-message guidance. Clarify that any existing human approval exception for merging does not grant an agent merge, main-push or deployment authority.
 
-## 4. Proposed SECURITY.md changes
+## 4. Approved SECURITY.md changes
 
-Use the reporting route selected by a lead:
-
-- **If reporting remains disabled:** remove the conditional GitHub button instruction and retain the existing security email contact.
-- **If a lead enables private reporting:** verify it is enabled before documenting the GitHub private reporting route alongside email. The agent does not change this setting.
+Use the lead-approved email route: remove the conditional GitHub button instruction and retain hello@jscebu.org. GitHub private vulnerability reporting remains disabled, verified again during the build phase on 2026-10-30. The agent does not change this setting.
 
 Explicitly include prompt injection through issues, comments and pull requests, plus misuse of agent access to this repository or its workflow, in scope. Reports about this integration remain in scope even though vulnerabilities in GitHub, Cloudflare and other third-party services themselves stay out of scope.
 
