@@ -36,14 +36,12 @@ describe('site content', () => {
 
   it('lists the official channels from /official-links', () => {
     const links = z.array(linkSchema).parse(JSON.parse(read('links.json')));
-    expect(links.map((l) => l.url)).toEqual(
-      expect.arrayContaining([
-        'https://www.facebook.com/JavaScriptCebu/',
-        'https://twitter.com/javascriptcebu',
-        'https://github.com/javascriptcebu/',
-        'mailto:hello@jscebu.org',
-      ]),
-    );
+    expect(links.map((l) => l.url)).toEqual([
+      'https://www.facebook.com/JavaScriptCebu/',
+      'https://twitter.com/javascriptcebu',
+      'https://github.com/javascriptcebu/',
+      'mailto:hello@jscebu.org',
+    ]);
   });
 
   it('features Cebby as the only project', () => {

@@ -1,0 +1,3 @@
+# Custom Domains affect DNS on deploy. A lead reviews this surface and its ownership.
+/apps/website/wrangler.jsonc @dorelljames
+/.github/CODEOWNERS @dorelljames

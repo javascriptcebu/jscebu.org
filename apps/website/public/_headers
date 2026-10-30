@@ -6,3 +6,5 @@
   Access-Control-Allow-Origin: *
 /brand/*
   Access-Control-Allow-Origin: *
+/brand/tokens.css
+  Content-Type: text/css; charset=utf-8

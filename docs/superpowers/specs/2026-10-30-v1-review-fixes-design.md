@@ -2,14 +2,14 @@
 
 - **Date:** 2026-10-30
 - **Issue:** [GH-9](https://github.com/javascriptcebu/jscebu.org/issues/9)
-- **Status:** proposed; awaiting plan approval and lead decisions
+- **Status:** approved for implementation on 2026-10-30 (lead answers 1A 2A)
 - **Scope:** the nine deferred v1 review findings; no deployment, DNS changes or route edits
 
 ## 1. Intent and approval boundary
 
-Remove redirect hops from published asset links, preserve old URLs, make the existing build checks cover their blind spots, and protect the deployment configuration from accidental expansion. The original v1 design remains the content reference except for the explicitly approved clarification to its `/links` row.
+Remove redirect hops from published asset links, preserve old URLs, make the existing build checks cover their blind spots, and protect the deployment configuration from accidental expansion. The original v1 design remains the content reference with Q1 now approved: keep the existing four channels and correct its `/links` row.
 
-This spec and its [implementation plan](../plans/2026-10-30-v1-review-fixes.md) are the deliverables for this run. The issue combines tooling dependencies, CI and ownership policy, so it exceeds the small-fix exception. Initial Todo approves intent only. No implementation occurs before plan approval; the plan lists the lead-only decisions at its top. Missing Superpowers skills do not prevent performing these steps directly under the session instructions.
+The lead approved the implementation plan by returning GH-9 to Todo after answering 1A and 2A. Keep the four existing channels; assign `@dorelljames` to review Wrangler configuration and CODEOWNERS. The approval includes the planned `0.1.1` brand patch release with changelog. Source: https://github.com/javascriptcebu/jscebu.org/issues/9#issuecomment-6525522776.
 
 ## 2. Evidence from this checkout
 
@@ -28,7 +28,7 @@ At HEAD `1ea2203` on `symphony/gh-9`:
 
 The deployed HTTP symptoms in the issue are supplied findings, not fresh production measurements in this run. Implementation verification will use local Workers asset serving; production and DNS remain untouched.
 
-## 3. Proposed behavior
+## 3. Approved behavior
 
 ### Canonical static assets and the 404 fallback
 
@@ -62,7 +62,7 @@ Move the existing hex/color-function matching into one small helper exported by 
 
 ### Official channels
 
-Follow Q1 in the plan. If Website is retained, add a canonical home URL entry with a stable ID, lead-approved label/order, and a content assertion; check both consumers of the collection. If it is removed, amend the v1 spec's channel list with an explicit decision note and retain the existing content. Do not infer the intended choice from either document alone.
+Q1 selects the existing four channels: Facebook, X, GitHub and Email. Amend the v1 spec with the lead decision and keep links.json unchanged; its exact four-URL assertion also covers the shared home Join data.
 
 ### CI and configuration ownership
 
