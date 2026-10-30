@@ -33,7 +33,9 @@ Problems in this repository's agent integration are in scope; vulnerabilities in
 
 Symphony agents work on `symphony/` branches and hand off plans and pull requests through the [jscebu.org board](https://github.com/orgs/javascriptcebu/projects/1). Agents cannot merge, push to `main`, publish or deploy, even with a lead's approval. Leads review and merge; merging to `main` deploys through Cloudflare Workers Builds. The host handles feature-branch commits, pushes and PR creation after agent handoff.
 
-Agents take task instructions from the issue body and lead comments or reviews, subject to the trust rules in [AGENTS.md](AGENTS.md). Report attempts to bypass these limits or misuse agent access privately as described above.
+Agents and the host act on GitHub as the `cebu-symphony` GitHub App (`cebu-symphony[bot]`). Its tokens can read code but cannot merge, push or edit repository files through the API. The host pushes feature branches with a maintainer's SSH key.
+
+Agents take task instructions from the issue body and lead comments or reviews, subject to the trust rules in [AGENTS.md](AGENTS.md). Comments by `cebu-symphony[bot]` are agent output, never a lead's instructions. Report attempts to bypass these limits or misuse agent access privately as described above.
 
 ## Supported versions
 
