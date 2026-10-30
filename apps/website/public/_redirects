@@ -1,13 +1,23 @@
 # Old Notion-era jscebu.org URLs (spec: docs/superpowers/specs/2026-10-28-jscebu-site-v1-design.md §5).
 # Targets end in / because folders are served at /name/; a bare /name would redirect twice.
 /mission-vision /about/ 301
+/mission-vision/ /about/ 301
 /members /about/#organizers 301
+/members/ /about/#organizers 301
 /iniatives /about/ 301
+/iniatives/ /about/ 301
 /initiatives /about/ 301
+/initiatives/ /about/ 301
 /official-links /links/ 301
+/official-links/ /links/ 301
 /community-projects /projects/ 301
+/community-projects/ /projects/ 301
 # Temporary: /events becomes a real page once events come from Cebby.
 /events /#events 302
+/events/ /#events 302
 /promotional-materials /brand/ 301
+/promotional-materials/ /brand/ 301
 /annual-hacktoberfest https://hacktoberfest.jscebu.org/ 301
+/annual-hacktoberfest/ https://hacktoberfest.jscebu.org/ 301
 /volunteers-training-workshop /about/ 301
+/volunteers-training-workshop/ /about/ 301

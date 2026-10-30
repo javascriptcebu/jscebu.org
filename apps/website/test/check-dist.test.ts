@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { brand } from '@jscebu/brand';
-import { findCursorViolations, findLiterals, findMissingLinks, findParityGaps, isSourceText, parityRules } from '../scripts/check-dist.ts';
+import { resolveBuiltPath, findRedirectProblems, findSitemapProblems, findTemplateLinkProblems, findCursorViolations, findLiterals, findMissingLinks, findParityGaps, isSourceText, parityRules } from '../scripts/check-dist.ts';
 
 const cursor = '<span class="jc-cursor" aria-hidden="true"></span>';
 
@@ -82,4 +82,47 @@ describe('isSourceText', () => {
     expect(['a.astro', 'b.ts', 'c.css', 'd.mjs', 'e.md', 'f.json'].map(isSourceText)).toEqual([true, true, true, true, true, true]);
     expect(['g.jpg', 'h.png', 'i.webp', 'j.svg', 'k.woff2'].map(isSourceText)).toEqual([false, false, false, false, false]);
   });
+});
+
+describe('canonical built URLs', () => {
+  const files = new Set(['index.html', 'about/index.html', 'brand/templates/event-post.html', 'brand/tokens.css']);
+  it.each([
+    ['/', 'index.html'], ['/about/', 'about/index.html'],
+    ['/brand/templates/event-post', 'brand/templates/event-post.html'], ['/brand/tokens.css', 'brand/tokens.css'],
+    ['/brand/templates/missing', undefined], ['/about', undefined], ['/about/index.html', undefined],
+    ['/brand/templates/event-post.html', undefined], ['/%ZZ', undefined], ['/../index.html', undefined],
+  ])('resolves %s without canonicalization hops', (path, expected) => {
+    expect(resolveBuiltPath(path, (p) => files.has(p))).toBe(expected);
+  });
+});
+
+describe('redirect destinations', () => {
+  const read = (path: string) => path === '/about/' ? '<html><body><h2 id="organizers">Team</h2><h2 id="café">Café</h2></body></html>' : undefined;
+  it.each(['/about/#organizers', '/about/#caf%C3%A9', 'https://www.jscebu.org/about/#organizers', 'https://elsewhere.example/#missing'])('accepts %s', (to) => {
+    expect(findRedirectProblems([{ from: '/members', to, status: 301 }], read)).toEqual([]);
+  });
+  it.each(['/about/#missing', '/missing/#organizers', '/about/#%ZZ'])('reports source and bad destination %s', (to) => {
+    const errors = findRedirectProblems([{ from: '/members', to, status: 301 }], read);
+    expect(errors).toHaveLength(1);
+    expect(errors[0]).toContain('/members');
+    expect(errors[0]).toContain(to);
+  });
+});
+
+describe('sitemap destinations', () => {
+  const exists = (path: string) => path === '/about/';
+  const xml = (url: string) => `<?xml version="1.0"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><url><loc>${url}</loc></url></urlset>`;
+  it('accepts a canonical same-site page', () => {
+    expect(findSitemapProblems(xml('https://www.jscebu.org/about/'), exists)).toEqual([]);
+  });
+  it.each(['https://www.jscebu.org/missing/', 'https://www.jscebu.org/members', 'https://www.jscebu.org/about', 'https://elsewhere.example/about/'])('rejects %s', (url) => {
+    expect(findSitemapProblems(xml(url), exists)).toHaveLength(1);
+  });
+});
+
+describe('brand template navigation', () => {
+  const html = (attr = '') => `<html><body><section id="downloads"><a href="/brand/templates/event-post" ${attr}>Post</a><a href="/brand/templates/fb-cover">Cover</a></section></body></html>`;
+  it('accepts canonical template links without download', () => expect(findTemplateLinkProblems(html())).toEqual([]));
+  it('rejects even an empty download attribute', () => expect(findTemplateLinkProblems(html('download=""'))).toHaveLength(1));
+  it('requires both links in downloads', () => expect(findTemplateLinkProblems('<html></html>')).toHaveLength(2));
 });

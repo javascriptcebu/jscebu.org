@@ -41,7 +41,7 @@ describe('brandMd', () => {
   const md = brandMd(brand);
 
   it('starts with the title and version', () => {
-    expect(md.startsWith('# JavaScript Cebu brand · v0.1.0')).toBe(true);
+    expect(md.startsWith('# JavaScript Cebu brand · v0.1.1')).toBe(true);
   });
 
   it('lists every MUST rule as a checkbox', () => {
@@ -88,4 +88,14 @@ describe('llmsTxt', () => {
     expect(txt.startsWith('# JavaScript Cebu\n')).toBe(true);
     expect(txt).toContain('https://www.jscebu.org/brand.md');
   });
+});
+
+it('publishes canonical template URLs and a matching patch changelog', () => {
+  const md = brandMd(brand);
+  for (const name of ['event-post', 'fb-cover']) {
+    expect(md).toContain(`https://www.jscebu.org/brand/templates/${name}`);
+    expect(md).not.toContain(`/brand/templates/${name}.html`);
+  }
+  expect(brand.version).toBe('0.1.1');
+  expect(brand.changelog[0].version).toBe(brand.version);
 });

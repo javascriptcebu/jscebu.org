@@ -30,26 +30,39 @@ page() { # path [content-type prefix]
   fetch "$1"
   local type
   type=$(printf '%s\n' "$headers" | grep -i '^content-type:' | head -1 | sed -E 's/^[Cc]ontent-[Tt]ype: *//')
-  if [ "$status" = 200 ] && [[ "$type" == ${2:-}* ]]; then report ok "$1 200 ${type}"
+  if [ "$status" = 200 ] && [ -z "$location" ] && [[ "$type" == ${2:-}* ]]; then report ok "$1 200 ${type}"
   else report fail "$1 200 ${2:-}" "got $status $type"; fi
 }
 
 redirect /mission-vision /about/ 301
+redirect /mission-vision/ /about/ 301
 redirect /members /about/#organizers 301
+redirect /members/ /about/#organizers 301
 redirect /iniatives /about/ 301
+redirect /iniatives/ /about/ 301
 redirect /initiatives /about/ 301
+redirect /initiatives/ /about/ 301
 redirect /official-links /links/ 301
+redirect /official-links/ /links/ 301
 redirect /community-projects /projects/ 301
+redirect /community-projects/ /projects/ 301
 redirect /events /#events 302
+redirect /events/ /#events 302
 redirect /promotional-materials /brand/ 301
+redirect /promotional-materials/ /brand/ 301
 redirect /annual-hacktoberfest https://hacktoberfest.jscebu.org/ 301
+redirect /annual-hacktoberfest/ https://hacktoberfest.jscebu.org/ 301
 redirect /volunteers-training-workshop /about/ 301
+redirect /volunteers-training-workshop/ /about/ 301
 
 for p in / /projects/ /about/ /links/ /brand/; do page "$p" text/html; done
 page /brand.md 'text/markdown; charset=utf-8'
 if printf '%s\n' "$headers" | grep -qi '^access-control-allow-origin: \*'; then report ok '/brand.md CORS *'; else report fail '/brand.md CORS *' 'header missing'; fi
 page /llms.txt 'text/plain; charset=utf-8'
-page /brand/tokens.css text/css
+page /brand/tokens.css 'text/css; charset=utf-8'
+if printf '%s\n' "$headers" | grep -qi '^access-control-allow-origin: \*'; then report ok '/brand/tokens.css CORS *'; else report fail '/brand/tokens.css CORS *' 'header missing'; fi
+page /brand/templates/event-post text/html
+page /brand/templates/fb-cover text/html
 page /brand/logo/sticker.svg image/svg+xml
 page /sitemap.xml application/xml
 page /robots.txt text/plain

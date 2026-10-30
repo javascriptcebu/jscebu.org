@@ -9,8 +9,8 @@
 import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
 import { join, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { brand, lintHtml, type Brand } from '@jscebu/brand';
-import { parseHTML } from 'linkedom';
+import { brand, lintHtml, findColorLiteral, type Brand } from '@jscebu/brand';
+import { DOMParser, parseHTML } from 'linkedom';
 
 const SITE = 'https://www.jscebu.org';
 
@@ -35,10 +35,65 @@ export function findMissingLinks(text: string, fileExists: (path: string) => boo
     ...[...text.matchAll(/https:\/\/www\.jscebu\.org\/[^\s"'<>)\]|`]*/g)].map((m) => m[0].replace(/[.,;:]+$/, '')),
   ];
   const paths = urls
-    .map((u) => (u.startsWith(SITE) ? u.slice(SITE.length) || '/' : u))
+    .map((u) => {
+      if (!u.startsWith('http')) return u;
+      try { const url = new URL(u); return url.origin === SITE ? url.pathname + url.search + url.hash : ''; }
+      catch { return ''; }
+    })
     .filter((u) => u.startsWith('/') && !u.startsWith('//'))
     .map((u) => u.replace(/[?#].*$/, ''));
   return [...new Set(paths)].filter((p) => !fileExists(p));
+}
+
+/** Resolve canonical public URLs to physical files, without accepting redirect hops. */
+export function resolveBuiltPath(urlPath: string, fileExists: (path: string) => boolean): string | undefined {
+  let path: string;
+  try { path = decodeURIComponent(urlPath); } catch { return undefined; }
+  if (!path.startsWith('/') || path.startsWith('//') || /[\\?#\0]/.test(path) || path.split('/').some((part) => part === '.' || part === '..')) return undefined;
+  if (/\.html?$/i.test(path)) return undefined;
+  const file = path.endsWith('/') ? `${path.slice(1)}index.html` : path.slice(1);
+  if (fileExists(file)) return file;
+  if (!path.endsWith('/') && !path.split('/').pop()!.includes('.') && fileExists(`${file}.html`)) return `${file}.html`;
+  return undefined;
+}
+
+export function findRedirectProblems(redirects: { from: string; to: string; status: number }[], readUrl: (path: string) => string | undefined): string[] {
+  return redirects.flatMap(({ from, to }) => {
+    const error = (reason: string) => [`_redirects sends ${from} to ${to}: ${reason}`];
+    let url: URL;
+    try { url = new URL(to, SITE); } catch { return error('invalid URL'); }
+    if (url.origin !== SITE) return [];
+    const html = readUrl(url.pathname);
+    if (html === undefined) return error('destination was not built at a canonical URL');
+    if (!url.hash) return [];
+    let id: string;
+    try { id = decodeURIComponent(url.hash.slice(1)); } catch { return error('malformed fragment encoding'); }
+    return parseHTML(html).document.getElementById(id) ? [] : error(`missing fragment #${id}`);
+  });
+}
+
+export function findSitemapProblems(xml: string, fileExists: (path: string) => boolean): string[] {
+  const doc = new DOMParser().parseFromString(xml, 'text/xml');
+  const entries = [...doc.querySelectorAll('url > loc')];
+  if (!entries.length) return ['sitemap.xml has no page URLs'];
+  return entries.flatMap((el) => {
+    const text = el.textContent?.trim() ?? '';
+    try {
+      const url = new URL(text);
+      if (url.origin === SITE && !url.search && !url.hash && fileExists(url.pathname)) return [];
+    } catch { /* Report invalid and noncanonical entries alike. */ }
+    return [`sitemap.xml links to ${text}, which is not a canonical built URL on ${SITE}`];
+  });
+}
+
+export function findTemplateLinkProblems(html: string): string[] {
+  const { document } = parseHTML(html);
+  return ['event-post', 'fb-cover'].flatMap((name) => {
+    const path = `/brand/templates/${name}`;
+    const link = document.querySelector(`#downloads a[href="${path}"]`);
+    if (!link) return [`/brand/ downloads is missing ${path}`];
+    return link.hasAttribute('download') ? [`/brand/ ${path} must open without a download attribute`] : [];
+  });
 }
 
 const normalize = (s: string) => s.replaceAll('`', '').replace(/\s+/g, ' ').trim();
@@ -55,15 +110,13 @@ export function findParityGaps(pageText: string, md: string, rules: string[]): s
   });
 }
 
-const HEX = /(?<!url\(\s*['"]?)#(?:[0-9a-f]{8}|[0-9a-f]{6}|[0-9a-f]{3,4})(?![\w-])/i;
-const COLOR_FN = /\b(?:rgba?|hsla?|hwb|lab|lch|oklab|oklch)\(/i;
 const FONT_FAMILY = /font-family\s*:(?!\s*(?:var\(|(?:inherit|initial|unset)\b))\s*[^;}"]+/i;
 
 export function findLiterals(srcFiles: { path: string; text: string }[]): string[] {
   return srcFiles.flatMap(({ path, text }) =>
     text.split('\n').flatMap((line, i) => {
-      const hit = line.match(HEX) ?? line.match(COLOR_FN) ?? line.match(FONT_FAMILY);
-      return hit ? [`${path}:${i + 1}: "${hit[0].trim()}" (use a --jc-* variable)`] : [];
+      const hit = findColorLiteral(line) ?? line.match(FONT_FAMILY)?.[0];
+      return hit ? [`${path}:${i + 1}: "${hit.trim()}" (use a --jc-* variable)`] : [];
     }),
   );
 }
@@ -105,17 +158,17 @@ function main(): void {
   const app = fileURLToPath(new URL('..', import.meta.url));
   const dist = join(app, 'dist');
   const read = (p: string) => readFileSync(join(dist, p), 'utf8');
-  /** A URL path is built when it names a file, or ends in / over a folder with index.html. A bare folder path would cost a redirect. */
-  const exists = (urlPath: string) => {
-    const p = join(dist, decodeURIComponent(urlPath));
-    if (urlPath.endsWith('/')) return existsSync(join(p, 'index.html'));
-    return existsSync(p) && statSync(p).isFile();
+  const resolve = (path: string) => resolveBuiltPath(path, (p) => existsSync(join(dist, p)) && statSync(join(dist, p)).isFile());
+  const exists = (path: string) => resolve(path) !== undefined;
+  const readUrl = (path: string) => {
+    const file = resolve(path);
+    return file === undefined ? undefined : read(file);
   };
 
   const required = [
     'index.html', 'projects/index.html', 'about/index.html', 'links/index.html', '404.html',
     'brand/index.html', 'brand.md', 'brand/tokens.css', 'llms.txt', 'sitemap.xml', 'robots.txt', '_redirects',
-    'brand/logo/sticker.svg', 'brand/templates/event-post.html',
+    'brand/logo/sticker.svg', 'brand/templates/event-post.html', 'brand/templates/fb-cover.html',
   ];
   const pages = walk(dist).filter((p) => p.endsWith('.html') && !p.startsWith(join(dist, 'brand', 'templates'))).map((p) => relative(dist, p));
   const brandHtml = read('brand/index.html');
@@ -136,9 +189,9 @@ function main(): void {
     }),
     ...findMissingLinks(md, exists).map((p) => `brand.md links to ${p}, which was not built`),
     ...findMissingLinks(read('llms.txt'), exists).map((p) => `llms.txt links to ${p}, which was not built`),
-    ...redirects
-      .filter((r) => r.to.startsWith('/') && !exists(r.to.replace(/#.*$/, '')))
-      .map((r) => `_redirects sends ${r.from} to ${r.to}, which was not built`),
+    ...findRedirectProblems(redirects, readUrl),
+    ...findSitemapProblems(read('sitemap.xml'), exists),
+    ...findTemplateLinkProblems(brandHtml),
     ...findParityGaps(parseHTML(brandHtml).document.body.textContent ?? '', md, parityRules(brand)),
     ...findLiterals(src),
   ];

@@ -191,7 +191,7 @@ const sample = 'Aa Bb Cc 0123456789';
         {
           brand.assets.map((a) => (
             <li>
-              <a class="jc-mono" href={a.path} download={a.path.endsWith('.html') ? undefined : ''}>↓ {a.path.replace('/brand/', '')}</a>
+              <a class="jc-mono" href={a.path} download={a.path.startsWith('/brand/templates/') ? undefined : ''}>↓ {a.path.replace('/brand/', '')}</a>
               <span class="label">{a.label}</span>
               <span class="use">{a.use}</span>
             </li>

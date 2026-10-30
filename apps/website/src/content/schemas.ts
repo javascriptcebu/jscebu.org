@@ -1,8 +1,7 @@
 import { z } from 'astro/zod';
-import type { SchemaContext } from 'astro:content';
 
 /** Takes Astro's schema context so `image()` resolves local images; tests pass a stand-in. */
-export const projectSchema = ({ image }: Pick<SchemaContext, 'image'>) =>
+export const projectSchema = <T extends z.ZodType>({ image }: { image: () => T }) =>
   z.object({
     name: z.string(),
     url: z.string().url(),
@@ -14,7 +13,7 @@ export const projectSchema = ({ image }: Pick<SchemaContext, 'image'>) =>
     order: z.number(),
   });
 
-export const organizerSchema = ({ image }: Pick<SchemaContext, 'image'>) =>
+export const organizerSchema = <T extends z.ZodType>({ image }: { image: () => T }) =>
   z.object({
     id: z.string(),
     name: z.string(),
